@@ -563,19 +563,29 @@
 <a-scene id="sc" loading-screen="backgroundColor: #0c0500; dotsColor: #c8a060" background="color:#14122a" renderer="antialias:true" vr-mode-ui="enabled:true">
 
   <a-entity id="rig" position="0 0 0">
-    <a-camera id="cam" position="0 1.6 0" look-controls="pointerLockEnabled:false" wasd-controls="enabled:false" rotation="0 0 0" reset-rotation>
+    <a-camera id="cam" position="0 1.6 0" look-controls wasd-controls="enabled:false">
+      <!-- Cursor que sigue el mouse en desktop, invisible -->
       <a-cursor
-        id="cursor"
-        fuse="true" fuse-timeout="1500"
-        color="#9966ff" opacity="0.9"
-        raycaster="objects:.hit; far:12"
-        animation__fusing="property:scale;startEvents:fusing;from:1 1 1;to:0.3 0.3 0.3;dur:1500"
-        animation__leave="property:scale;startEvents:mouseleave;to:1 1 1;dur:150">
+        fuse="false"
+        color="#000000" opacity="0"
+        raycaster="objects:.hit; far:12; useWorldCoordinates:false"
+        cursor="rayOrigin:mouse">
       </a-cursor>
     </a-camera>
-    
-    <a-entity id="rhand" laser-controls="hand:right" raycaster="objects: .hit; far: 10; interval: 100"></a-entity>
-    <a-entity id="lhand" laser-controls="hand:left" raycaster="objects: .hit; far: 10; interval: 100"></a-entity>
+
+    <!-- Mano derecha Quest 2 -->
+    <a-entity id="rhand"
+      oculus-touch-controls="hand:right"
+      laser-controls="hand:right"
+      raycaster="objects:.hit; far:12; showLine:true; lineColor:#c8a060; lineOpacity:0.7; interval:50">
+    </a-entity>
+
+    <!-- Mano izquierda Quest 2 -->
+    <a-entity id="lhand"
+      oculus-touch-controls="hand:left"
+      laser-controls="hand:left"
+      raycaster="objects:.hit; far:12; showLine:true; lineColor:#c8a060; lineOpacity:0.5; interval:50">
+    </a-entity>
   </a-entity>
 
   <!-- ILUMINACIÓN CÁLIDA DE BIBLIOTECA -->
