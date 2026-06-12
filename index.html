@@ -573,18 +573,16 @@
       </a-cursor>
     </a-camera>
 
-    <!-- Mano derecha Quest 2 -->
+    <!-- Controladores Quest 2/3: múltiples métodos para compatibilidad -->
     <a-entity id="rhand"
-      oculus-touch-controls="hand:right"
+      hand-controls="hand:right"
       laser-controls="hand:right"
-      raycaster="objects:.hit; far:12; showLine:true; lineColor:#c8a060; lineOpacity:0.7; interval:50">
+      raycaster="objects:.hit; far:15; showLine:true; lineColor:#c8a060; lineOpacity:0.8; interval:50">
     </a-entity>
-
-    <!-- Mano izquierda Quest 2 -->
     <a-entity id="lhand"
-      oculus-touch-controls="hand:left"
+      hand-controls="hand:left"
       laser-controls="hand:left"
-      raycaster="objects:.hit; far:12; showLine:true; lineColor:#c8a060; lineOpacity:0.5; interval:50">
+      raycaster="objects:.hit; far:15; showLine:true; lineColor:#c8a060; lineOpacity:0.6; interval:50">
     </a-entity>
   </a-entity>
 
