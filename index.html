@@ -8,6 +8,9 @@
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     body{background:#0c0500;font-family:system-ui,-apple-system,sans-serif;overflow:hidden}
+    /* VR DOM Overlay — invisible por defecto, A-Frame lo activa en VR mode */
+    #vr-overlay { position:fixed; inset:0; pointer-events:none; z-index:9000; }
+    #vr-overlay > * { pointer-events:all; }
 
     /* Pantalla de carga A-Frame — fondo oscuro, sin el celeste default */
     .a-loader-title { display: none !important; }
@@ -466,6 +469,9 @@
 </div>
 
 <div id="toast"></div>
+<!-- VR OVERLAY: todos los elementos HTML que deben verse en VR mode -->
+<div id="vr-overlay">
+
 <!-- LECTOR DE MUESTRA -->
 <div id="reader-overlay">
   <div id="reader-dim" onclick="closeReader()"></div>
@@ -560,7 +566,9 @@
 
 <div id="hint">Mirá un libro o apuntá con el mando para ver detalles</div>
 
-<a-scene id="sc" loading-screen="backgroundColor: #0c0500; dotsColor: #c8a060" background="color:#14122a" renderer="antialias:true" vr-mode-ui="enabled:true">
+</div><!-- /#vr-overlay -->
+
+<a-scene id="sc" loading-screen="backgroundColor: #0c0500; dotsColor: #c8a060" background="color:#14122a" renderer="antialias:true" vr-mode-ui="enabled:true" webxr="optionalFeatures: dom-overlay; overlayElement: #vr-overlay">
 
   <a-entity id="rig" position="0 0 0">
 
