@@ -563,27 +563,29 @@
 <a-scene id="sc" loading-screen="backgroundColor: #0c0500; dotsColor: #c8a060" background="color:#14122a" renderer="antialias:true" vr-mode-ui="enabled:true">
 
   <a-entity id="rig" position="0 0 0">
+
+    <!-- CÁMARA desktop: mouse click -->
     <a-camera id="cam" position="0 1.6 0" look-controls wasd-controls="enabled:false">
-      <!-- Cursor que sigue el mouse en desktop, invisible -->
-      <a-cursor
-        fuse="false"
-        color="#000000" opacity="0"
-        raycaster="objects:.hit; far:12; useWorldCoordinates:false"
+      <a-cursor fuse="false" color="#000000" opacity="0"
+        raycaster="objects:.hit; far:15"
         cursor="rayOrigin:mouse">
       </a-cursor>
     </a-camera>
 
-    <!-- Controladores Quest 2/3: múltiples métodos para compatibilidad -->
+    <!-- MANO DERECHA: laser + raycaster explícito para Quest 2/3 -->
     <a-entity id="rhand"
-      hand-controls="hand:right"
-      laser-controls="hand:right"
-      raycaster="objects:.hit; far:15; showLine:true; lineColor:#c8a060; lineOpacity:0.8; interval:50">
+      laser-controls="hand:right; model:true"
+      raycaster="objects:.hit; far:15; showLine:true; lineColor:#c8a060; lineOpacity:0.9; interval:50"
+      position="0 0 0">
     </a-entity>
+
+    <!-- MANO IZQUIERDA -->
     <a-entity id="lhand"
-      hand-controls="hand:left"
-      laser-controls="hand:left"
-      raycaster="objects:.hit; far:15; showLine:true; lineColor:#c8a060; lineOpacity:0.6; interval:50">
+      laser-controls="hand:left; model:true"
+      raycaster="objects:.hit; far:15; showLine:true; lineColor:#c8a060; lineOpacity:0.7; interval:50"
+      position="0 0 0">
     </a-entity>
+
   </a-entity>
 
   <!-- ILUMINACIÓN CÁLIDA DE BIBLIOTECA -->
@@ -1291,6 +1293,25 @@ function initScene(){
   document.getElementById('pcl').addEventListener('click', closePanel);
   document.getElementById('heart-btn').addEventListener('click', saveToFavorites);
   document.getElementById('bback-hit').addEventListener('click', goBack);
+
+  // Asegurar que el raycaster de los controllers también dispara click en los objetos
+  const scene = document.getElementById('sc');
+  scene.addEventListener('enter-vr', function(){
+    // En VR: conectar eventos de trigger de los controllers
+    const rhand = document.getElementById('rhand');
+    const lhand = document.getElementById('lhand');
+    [rhand, lhand].forEach(function(hand){
+      if(!hand) return;
+      hand.addEventListener('triggerdown', function(){
+        const ray = hand.components.raycaster;
+        if(!ray) return;
+        const intersects = ray.intersectedEls;
+        if(intersects && intersects.length > 0){
+          intersects[0].emit('click', {}, true);
+        }
+      });
+    });
+  });
 }
 
 var readerCurrentPage = 0;
