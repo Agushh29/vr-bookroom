@@ -186,7 +186,7 @@
       </a-cursor>
 
       <!-- ══════════ BOTÓN "Cambiar género" — HUD fijo, siempre visible en la sala ══════════ -->
-      <a-entity id="bback" visible="false" position="-0.78 0.62 -1.5">
+      <a-entity id="bback" visible="false" position="0 0.58 -1.5">
         <a-entity id="bback-hit" class="hit">
           <a-plane class="hit" width="0.46" height="0.115" color="#6e4a30" opacity="0.97" roughness="0"></a-plane>
           <a-plane width="0.48" height="0.13" color="#d9bd9a" opacity="0.35" position="0 0 -0.004"></a-plane>
@@ -214,12 +214,12 @@
       <a-entity id="panel3d" visible="false" position="0 0 -1.6">
 
         <!-- CARD IZQUIERDA: datos del libro — render via canvas para layout preciso -->
-        <a-entity position="-0.68 0 0">
+        <a-entity position="-0.34 0 0">
           <a-plane id="p3-canvas-left" width="0.64" height="1.0" roughness="0.6"></a-plane>
 
           <!-- Hit invisible sobre el corazón dibujado en canvas -->
-          <a-entity id="p3-heart-btn" class="hit" position="0.25 0.43 0.011">
-            <a-plane class="hit" width="0.10" height="0.10" color="#000" opacity="0"></a-plane>
+          <a-entity id="p3-heart-btn" class="hit" position="0.238 0.43 0.011">
+            <a-plane class="hit" width="0.13" height="0.13" color="#000" opacity="0"></a-plane>
           </a-entity>
 
           <!-- Botón Cerrar — secundario: borde y letras blancas (dibujado en canvas), hit invisible -->
@@ -231,15 +231,11 @@
           <a-entity id="p3-leer-btn" class="hit" position="0.15 -0.42 0.011">
             <a-plane class="hit" width="0.29" height="0.10" color="#000" opacity="0"></a-plane>
           </a-entity>
-        </a-entity>
 
-        <!-- CENTRO: portada -->
-        <a-entity position="0 0 0.04">
-          <a-plane id="p3-cover" width="0.30" height="0.46" color="#888" roughness="0.4"></a-plane>
         </a-entity>
 
         <!-- CARD DERECHA: reseñas — render via canvas -->
-        <a-entity position="0.68 0 0">
+        <a-entity position="0.34 0 0">
           <a-plane id="p3-canvas-right" width="0.64" height="1.0" roughness="0.6"></a-plane>
 
           <!-- Hit invisible sobre el botón de filtro (esquina sup der) -->
@@ -707,6 +703,24 @@ function makeHUDAlwaysOnTop(rootEl){
   else rootEl.addEventListener('loaded', function(){ apply(rootEl); });
 }
 
+// Aplica el override de profundidad a UN solo elemento (no recursivo), con
+// reintento corto por si el material todavía no está listo tras un setAttribute.
+function applyDepthOverride(el){
+  if(!el) return;
+  function tryApply(retries){
+    const mesh = el.getObject3D && el.getObject3D('mesh');
+    if(mesh && mesh.material){
+      mesh.material.depthTest  = false;
+      mesh.material.depthWrite = false;
+      mesh.renderOrder = 999;
+      mesh.material.needsUpdate = true;
+    } else if(retries > 0){
+      setTimeout(function(){ tryApply(retries-1); }, 40);
+    }
+  }
+  tryApply(8);
+}
+
 function wrapLines(ctx, text, maxWidth){
   const words = String(text||'').split(' ');
   const lines = [];
@@ -745,20 +759,22 @@ function drawCardLeft(b){
   ctx.fillStyle = '#6e4a30';
   ctx.fillRect(0,0,W,H);
 
-  // Corazón
+  // Corazón (arriba a la derecha) — más grande para clickear más fácil
+  const heartCx = W-padX-42, heartCy = 70;
   ctx.fillStyle = 'rgba(217,189,154,0.25)';
-  ctx.beginPath(); ctx.arc(570,70,38,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(heartCx,heartCy,46,0,Math.PI*2); ctx.fill();
   ctx.fillStyle = '#d9bd9a';
-  ctx.font = '38px sans-serif';
+  ctx.font = '46px sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText(p3HeartFilled ? '\u2665' : '\u2661', 570, 74);
+  ctx.fillText(p3HeartFilled ? '\u2665' : '\u2661', heartCx, heartCy+3);
   ctx.textAlign='left'; ctx.textBaseline='alphabetic';
 
-  // Título (hasta 2 líneas)
+  // Título (hasta 2 líneas, ancho completo)
+  const titleMaxW = W-padX*2-110;
   let y = 75;
   ctx.fillStyle = '#ffffff';
   ctx.font = 'bold 40px sans-serif';
-  const titleLines = wrapLines(ctx, b.t, 460).slice(0,2);
+  const titleLines = wrapLines(ctx, b.t, titleMaxW).slice(0,2);
   titleLines.forEach((line,i)=> ctx.fillText(line, padX, y + i*48));
   y += titleLines.length*48 + 38;
 
@@ -1222,28 +1238,6 @@ function openPanel(i){
   p3CurrentBook  = b;
   p3HeartFilled  = false;
   drawCardLeft(b);
-
-  // ── Portada central — reusa la misma imagen ya cargada para el libro de la mesa ──
-  const coverEl = document.getElementById('p3-cover');
-  coverEl.removeAttribute('material');
-  coverEl.setAttribute('color', COLS[i]);
-  if(b.isbn){
-    const texImg = document.getElementById('btex-'+i);
-    function applyCover(){
-      coverEl.setAttribute('material','src:#btex-'+i+'; fit:cover; roughness:0.3');
-      makeHUDAlwaysOnTop(coverEl);
-    }
-    // Si la imagen de la mesa ya cargó, usarla directo; si no, esperar su load
-    if(texImg.complete && texImg.naturalWidth > 0){
-      applyCover();
-    } else {
-      texImg.addEventListener('load', applyCover, {once:true});
-      // Por si loadBooks no llegó a iniciar la carga de esta portada
-      if(!texImg.src){
-        texImg.src = 'https://covers.openlibrary.org/b/isbn/' + b.isbn + '-L.jpg?default=false';
-      }
-    }
-  }
 
   // ── Card derecha: reseñas (dibujado en canvas) ──
   p3SortMode = 'relevancia';
