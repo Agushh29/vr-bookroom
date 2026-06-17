@@ -407,14 +407,14 @@
     <a-plane id="tooltip3d-canvas" width="0.48" height="0.104" roughness="0"></a-plane>
   </a-entity>
 
-  <a-box id="b0" class="hit" position=" 0.000 1.08 -1.100" rotation="0   0 0"   width="0.20" height="0.30" depth="0.055" color="#e74c3c"></a-box>
-  <a-box id="b1" class="hit" position=" 0.778 1.08 -0.778" rotation="0 -45 0"   width="0.20" height="0.30" depth="0.055" color="#3498db"></a-box>
-  <a-box id="b2" class="hit" position=" 1.100 1.08  0.000" rotation="0 -90 0"   width="0.20" height="0.30" depth="0.055" color="#2ecc71"></a-box>
-  <a-box id="b3" class="hit" position=" 0.778 1.08  0.778" rotation="0 -135 0"  width="0.20" height="0.30" depth="0.055" color="#f39c12"></a-box>
-  <a-box id="b4" class="hit" position=" 0.000 1.08  1.100" rotation="0 180 0"   width="0.20" height="0.30" depth="0.055" color="#9b59b6"></a-box>
-  <a-box id="b5" class="hit" position="-0.778 1.08  0.778" rotation="0 135 0"   width="0.20" height="0.30" depth="0.055" color="#1abc9c"></a-box>
-  <a-box id="b6" class="hit" position="-1.100 1.08  0.000" rotation="0  90 0"   width="0.20" height="0.30" depth="0.055" color="#e67e22"></a-box>
-  <a-box id="b7" class="hit" position="-0.778 1.08 -0.778" rotation="0  45 0"   width="0.20" height="0.30" depth="0.055" color="#e91e63"></a-box>
+  <a-box id="b0" class="hit" position=" 0.000 1.00 -0.850" rotation="-20   0 0"   width="0.20" height="0.30" depth="0.055" color="#e74c3c"></a-box>
+  <a-box id="b1" class="hit" position=" 0.601 1.00 -0.601" rotation="-20 -45 0"   width="0.20" height="0.30" depth="0.055" color="#3498db"></a-box>
+  <a-box id="b2" class="hit" position=" 0.850 1.00  0.000" rotation="-20 -90 0"   width="0.20" height="0.30" depth="0.055" color="#2ecc71"></a-box>
+  <a-box id="b3" class="hit" position=" 0.601 1.00  0.601" rotation="-20 -135 0"  width="0.20" height="0.30" depth="0.055" color="#f39c12"></a-box>
+  <a-box id="b4" class="hit" position=" 0.000 1.00  0.850" rotation="-20 180 0"   width="0.20" height="0.30" depth="0.055" color="#9b59b6"></a-box>
+  <a-box id="b5" class="hit" position="-0.601 1.00  0.601" rotation="-20 135 0"   width="0.20" height="0.30" depth="0.055" color="#1abc9c"></a-box>
+  <a-box id="b6" class="hit" position="-0.850 1.00  0.000" rotation="-20  90 0"   width="0.20" height="0.30" depth="0.055" color="#e67e22"></a-box>
+  <a-box id="b7" class="hit" position="-0.601 1.00 -0.601" rotation="-20  45 0"   width="0.20" height="0.30" depth="0.055" color="#e91e63"></a-box>
 
   <!-- panel removido: ahora es 2D HTML -->
   <a-assets>
@@ -719,6 +719,27 @@ function applyDepthOverride(el){
     }
   }
   tryApply(8);
+}
+
+// Oculta/muestra la línea visual del láser de los mandos del Quest.
+// Necesario porque los paneles HUD (cards, lector) usan depthTest:false
+// para no quedar tapados por la mesa, pero eso hace que el láser largo
+// del raycaster se vea atravesando la card en vez de cortarse en ella.
+function setControllerLaserVisible(visible){
+  ['rhand','lhand'].forEach(function(id){
+    const hand = document.getElementById(id);
+    if(!hand) return;
+    const ray = hand.components && hand.components.raycaster;
+    if(ray && ray.line){
+      ray.line.visible = visible;
+    } else {
+      // El componente raycaster puede no estar listo todavía; reintentar
+      setTimeout(function(){
+        const r2 = hand.components && hand.components.raycaster;
+        if(r2 && r2.line) r2.line.visible = visible;
+      }, 60);
+    }
+  });
 }
 
 function wrapLines(ctx, text, maxWidth){
@@ -1106,6 +1127,7 @@ function openGenrePicker(){
   document.getElementById('reader3d').setAttribute('visible','false');
   const bback = document.getElementById('bback');
   if(bback) bback.setAttribute('visible','false');
+  setControllerLaserVisible(false);
 
   g3Selected = genre;
   drawGenrePicker();
@@ -1131,6 +1153,7 @@ function g3Confirm(){
   panel.setAttribute('animation__appear',
     'property:scale; to:0.01 0.01 0.01; dur:180; easing:easeInQuad');
   setTimeout(function(){ panel.setAttribute('visible','false'); }, 190);
+  setControllerLaserVisible(true);
 
   // Limpiar texturas de libros anteriores
   for(let i=0;i<8;i++){
@@ -1234,6 +1257,8 @@ function openPanel(i){
   el.setAttribute('emissive','#c8a060');
   el.setAttribute('emissive-intensity','0.4');
 
+  setControllerLaserVisible(false);
+
   // ── Card izquierda: datos del libro (dibujado en canvas) ──
   p3CurrentBook  = b;
   p3HeartFilled  = false;
@@ -1284,6 +1309,7 @@ function closePanel(){
     }
   }
   currentOpenedBookIndex = null;
+  setControllerLaserVisible(true);
 }
 
 function leerMuestra(){
