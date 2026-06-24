@@ -7,34 +7,21 @@
   <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{background:#0c0500;font-family:system-ui,-apple-system,sans-serif;overflow:hidden}
-    /* VR DOM Overlay — invisible por defecto, A-Frame lo activa en VR mode */
+    body{background:#1a0810;font-family:system-ui,-apple-system,sans-serif;overflow:hidden}
     #vr-overlay { position:fixed; inset:0; pointer-events:none; z-index:9000; }
     #vr-overlay > * { pointer-events:all; }
-
-    /* Pantalla de carga A-Frame — fondo oscuro, sin el celeste default */
     .a-loader-title { display: none !important; }
-    .a-orientation-modal { background: #0c0500 !important; }
-    #a-canvas { background: #0c0500 !important; }
-
-    /* Loading screen overlay */
-    .a-loader {
-      background: #0c0500 !important;
-    }
-    [data-aframe-inspector] {
-      background: #0c0500 !important;
-    }
-
-    /* El div que A-Frame inyecta como loader */
-    a-scene canvas {
-      background: #0c0500 !important;
-    }
+    .a-orientation-modal { background: #1a0810 !important; }
+    #a-canvas { background: #1a0810 !important; }
+    .a-loader { background: #1a0810 !important; }
+    [data-aframe-inspector] { background: #1a0810 !important; }
+    a-scene canvas { background: #1a0810 !important; }
     a-scene{position:fixed!important;inset:0!important;z-index:0!important}
 
-    /* ── OVERLAY ── */
+    /* ── OVERLAY CONTENEDOR ── */
     #ov{
       position:fixed;inset:0;z-index:999;
-      background:linear-gradient(180deg,#0c0500 0%,#180a03 25%,#1e0e05 65%,#0e0400 100%);
+      background:linear-gradient(160deg,#1a0810 0%,#2a0e18 50%,#120608 100%);
       display:flex;align-items:center;justify-content:center;padding:20px;
       transition:opacity .5s ease;
       overflow:hidden;
@@ -42,87 +29,113 @@
     #ov.fade{opacity:0;pointer-events:none}
     #ov.off{display:none}
 
+    /* Glow de fondo */
     #ov::before{
       content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
-      width:110%;height:55%;pointer-events:none;
-      background:radial-gradient(ellipse at 50% -10%,rgba(255,160,40,.22) 0%,rgba(180,90,15,.07) 50%,transparent 72%);
+      width:100%;height:60%;pointer-events:none;
+      background:radial-gradient(ellipse at 50% -10%,rgba(184,26,48,.18) 0%,rgba(107,16,32,.08) 50%,transparent 72%);
     }
 
-    /* ── ESTANTES CSS ── */
+    /* ── ESTANTES CSS (fondo decorativo) ── */
     .shelf{position:absolute;left:0;right:0;height:17%;overflow:hidden;pointer-events:none;}
     .shelf::before{
       content:'';position:absolute;top:0;left:0;right:0;bottom:10px;
       background:repeating-linear-gradient(90deg,
-        #6b2c1a 0,#6b2c1a 15px, #1a0800 15px,#1a0800 16px,
-        #2c4a1e 16px,#2c4a1e 29px, #0a1506 29px,#0a1506 30px,
-        #1e3352 30px,#1e3352 43px, #060f1a 43px,#060f1a 44px,
-        #7a4a10 44px,#7a4a10 57px, #1e1005 57px,#1e1005 58px,
-        #4a1e2a 58px,#4a1e2a 71px, #130508 71px,#130508 72px,
-        #1e4a3a 72px,#1e4a3a 85px, #061510 85px,#061510 86px,
-        #5c3a0a 86px,#5c3a0a 99px, #160d02 99px,#160d02 100px,
-        #3a2a5c 100px,#3a2a5c 113px,#0d0818 113px,#0d0818 114px,
-        #6b3a1a 114px,#6b3a1a 127px,#1a0e04 127px,#1a0e04 128px,
-        #2a4a2a 128px,#2a4a2a 141px,#081408 141px,#081408 142px
+        #6b1020 0,#6b1020 15px, #3a0810 15px,#3a0810 16px,
+        #8a1828 16px,#8a1828 29px, #4a0c14 29px,#4a0c14 30px,
+        #5a0e18 30px,#5a0e18 43px, #300810 43px,#300810 44px,
+        #7a1428 44px,#7a1428 57px, #420c18 420c18 57px 58px,
+        #9a2030 58px,#9a2030 71px, #501020 71px,#501020 72px,
+        #6b1020 72px,#6b1020 85px, #380a14 85px,#380a14 86px,
+        #4a0e18 86px,#4a0e18 99px, #280610 99px,#280610 100px
       );
     }
-    .shelf::after{content:'';position:absolute;bottom:0;left:0;right:0;height:10px;background:linear-gradient(#3c1c07,#1c0b02);box-shadow:0 4px 14px rgba(0,0,0,.85);}
-    .s1{top:3%}  .s1::before{background-position:0 0}
-    .s2{top:22%} .s2::before{background-position:-48px 0}
-    .s3{top:41%} .s3::before{background-position:-96px 0}
-    .s4{top:60%} .s4::before{background-position:-24px 0}
-    .s5{top:78%;height:22%} .s5::before{background-position:-72px 0}
-
+    .shelf::after{content:'';position:absolute;bottom:0;left:0;right:0;height:10px;background:linear-gradient(#4a0c18,#200810);box-shadow:0 4px 14px rgba(0,0,0,.85);}
+    .s1{top:3%} .s2{top:22%} .s3{top:41%} .s4{top:60%} .s5{top:78%;height:22%}
     .wall{position:absolute;top:0;height:85%;width:46%;overflow:hidden;pointer-events:none;}
-    .wl{left:0;background:linear-gradient(to right,#100600 0%,#1c0c04 55%,transparent 100%);transform:perspective(650px) rotateY(32deg);transform-origin:left center;}
-    .wr{right:0;background:linear-gradient(to left,#100600 0%,#1c0c04 55%,transparent 100%);transform:perspective(650px) rotateY(-32deg);transform-origin:right center;}
+    .wl{left:0;background:linear-gradient(to right,#120608 0%,#1e0c14 55%,transparent 100%);transform:perspective(650px) rotateY(32deg);transform-origin:left center;}
+    .wr{right:0;background:linear-gradient(to left,#120608 0%,#1e0c14 55%,transparent 100%);transform:perspective(650px) rotateY(-32deg);transform-origin:right center;}
     .vign{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,transparent 18%,rgba(0,0,0,.88) 100%);pointer-events:none;}
 
-    /* ── PANEL GLASSMORPHISM ── */
+    /* ── PANEL ── */
     .panel{
       position:relative;z-index:1;
-      max-width:620px;width:100%;
-      background:rgba(8,5,18,.82);
-      border:1px solid rgba(124,77,255,.28);
+      max-width:580px;width:100%;
+      background:rgba(30,8,16,.88);
+      border:1px solid rgba(184,26,48,.35);
       border-radius:22px;
-      padding:40px 44px 36px;
-      display:flex;flex-direction:column;align-items:center;gap:24px;
-      box-shadow:0 0 0 1px rgba(255,255,255,.04) inset,0 8px 60px rgba(0,0,0,.8),0 0 80px rgba(80,40,180,.18);
+      padding:44px 48px 40px;
+      display:flex;flex-direction:column;align-items:center;gap:22px;
+      box-shadow:0 0 0 1px rgba(255,255,255,.03) inset,0 8px 60px rgba(0,0,0,.8),0 0 80px rgba(184,26,48,.12);
     }
     @media(max-width:560px){.panel{padding:28px 18px 24px}}
 
-    .eyebrow{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#c8a060;margin-bottom:8px}
-    h1{font-size:clamp(24px,5vw,40px);font-weight:700;color:#f5efe0;text-align:center;line-height:1.2}
-    .sub{font-size:15px;color:rgba(220,205,175,.55);text-align:center;margin-top:8px}
+    /* STEP 1 — Bienvenida */
+    #step-welcome{display:flex;flex-direction:column;align-items:center;gap:18px;width:100%}
+    #step-welcome h1{font-size:clamp(22px,4.5vw,34px);font-weight:700;color:#faf0e6;text-align:center;line-height:1.25}
+    #step-welcome .desc{font-size:15px;color:rgba(250,240,230,.6);text-align:center;line-height:1.6;max-width:420px}
+    #btn-iniciar{
+      margin-top:8px;padding:14px 52px;border-radius:50px;border:none;
+      background:#b81a30;color:#faf0e6;font-size:16px;font-weight:700;
+      cursor:pointer;transition:all .18s;
+      box-shadow:0 4px 24px rgba(184,26,48,.4);
+    }
+    #btn-iniciar:hover{background:#d42040;transform:translateY(-2px);box-shadow:0 6px 32px rgba(184,26,48,.55)}
+
+    /* STEP 2 — Género */
+    #step-genre{display:none;flex-direction:column;align-items:center;gap:20px;width:100%}
+    #step-genre.show{display:flex}
+    .eyebrow{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#f7c35a}
+    #step-genre h2{font-size:clamp(20px,4vw,30px);font-weight:700;color:#faf0e6;text-align:center}
+    #step-genre .sub{font-size:14px;color:rgba(250,240,230,.5);text-align:center}
 
     .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;width:100%}
     @media(max-width:520px){.grid{grid-template-columns:repeat(3,1fr)}}
-
     .gc{
-      cursor:pointer;padding:18px 10px;border-radius:12px;
-      border:1.5px solid rgba(200,160,80,.15);background:rgba(200,160,80,.05);
+      cursor:pointer;padding:16px 8px;border-radius:12px;
+      border:1.5px solid rgba(184,26,48,.2);background:rgba(184,26,48,.06);
       text-align:center;transition:all .18s;user-select:none;
     }
-    .gc:hover{border-color:rgba(200,160,80,.5);background:rgba(200,160,80,.1);transform:translateY(-2px);box-shadow:0 0 18px rgba(200,140,40,.2)}
-    .gc.sel{border-color:#c8a060;background:rgba(200,160,80,.15);box-shadow:0 0 24px rgba(200,140,40,.35)}
-    .gc-i{font-size:28px;display:block;margin-bottom:7px}
-    .gc-n{font-size:13px;font-weight:600;color:#e8d8b0}
-    .gc.sel .gc-n{color:#f0c870}
+    .gc:hover{border-color:rgba(184,26,48,.55);background:rgba(184,26,48,.12);transform:translateY(-2px)}
+    .gc.sel{border-color:#b81a30;background:rgba(184,26,48,.2);box-shadow:0 0 20px rgba(184,26,48,.3)}
+    .gc-i{font-size:26px;display:block;margin-bottom:6px}
+    .gc-n{font-size:12px;font-weight:600;color:#e88a7a}
+    .gc.sel .gc-n{color:#faf0e6}
 
     #go{
-      margin-top:4px;padding:13px 42px;border-radius:50px;border:none;
-      background:#8b5e1a;color:#f5ede0;font-size:15px;font-weight:700;
+      padding:13px 42px;border-radius:50px;border:none;
+      background:#b81a30;color:#faf0e6;font-size:15px;font-weight:700;
       cursor:pointer;transition:all .18s;
-      box-shadow:0 4px 20px rgba(140,90,20,.4);
+      box-shadow:0 4px 20px rgba(184,26,48,.4);
       opacity:.35;pointer-events:none;
     }
     #go.on{opacity:1;pointer-events:all}
-    #go.on:hover{background:#a87020;transform:translateY(-2px);box-shadow:0 6px 28px rgba(160,110,20,.55)}
+    #go.on:hover{background:#d42040;transform:translateY(-2px);box-shadow:0 6px 28px rgba(184,26,48,.55)}
 
-    /* TOAST */
+    /* HINT */
+    #hint{
+      position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:500;
+      background:rgba(30,8,16,.85);border:1px solid rgba(184,26,48,.25);
+      color:rgba(250,240,230,.6);padding:8px 18px;border-radius:50px;font-size:12px;
+      opacity:0;pointer-events:none;transition:opacity .4s;
+    }
+    #hint.show{opacity:1}
 
-
-
-
+    /* TOOLTIP */
+    #book-tooltip {
+      display: none; position: fixed; z-index: 700; pointer-events: none;
+      transform: translate(-50%, -100%);
+      background: #6b1020; color: #faf0e6;
+      font-size: 14px; font-weight: 500; padding: 10px 18px;
+      border-radius: 12px; white-space: nowrap; max-width: 200px;
+      text-align: center; line-height: 1.3;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+    }
+    #book-tooltip::after {
+      content: ''; position: absolute; bottom: -10px; left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent; border-top-color: #6b1020; border-bottom: none;
+    }
 
     /* HINT */
     #hint{
@@ -146,35 +159,44 @@
     <div class="shelf s3"></div><div class="shelf s4"></div><div class="shelf s5"></div>
   </div>
   <div class="vign"></div>
+
   <div class="panel">
-    <div>
+
+    <!-- STEP 1: Bienvenida -->
+    <div id="step-welcome">
+      <h1>¡Bienvenido a la<br>experiencia Ramuna!</h1>
+      <p class="desc">Tu librería digital de confianza. En esta experiencia vas a poder explorar algunos de nuestros libros destacados, ajustados a tus gustos.</p>
+      <button id="btn-iniciar" onclick="showGenrePicker()">Iniciar experiencia →</button>
+    </div>
+
+    <!-- STEP 2: Selector de género -->
+    <div id="step-genre">
       <div class="eyebrow">📚 Biblioteca Virtual</div>
-      <h1>¿Qué te gustaría<br>leer hoy?</h1>
+      <h2>¿Qué te gustaría leer hoy?</h2>
       <p class="sub">Elegí un género para explorar la sala de libros en VR.</p>
+      <div class="grid">
+        <div class="gc" data-g="fantasia"        onclick="pick(this)"><span class="gc-i">🧙</span><span class="gc-n">Fantasía</span></div>
+        <div class="gc" data-g="romance"         onclick="pick(this)"><span class="gc-i">💞</span><span class="gc-n">Romance</span></div>
+        <div class="gc" data-g="thriller"        onclick="pick(this)"><span class="gc-i">🔪</span><span class="gc-n">Thriller</span></div>
+        <div class="gc" data-g="ciencia-ficcion" onclick="pick(this)"><span class="gc-i">🚀</span><span class="gc-n">Ciencia Ficción</span></div>
+        <div class="gc" data-g="autoayuda"       onclick="pick(this)"><span class="gc-i">🌱</span><span class="gc-n">Autoayuda</span></div>
+      </div>
+      <button id="go" onclick="enterVR()">Entrar a VR →</button>
     </div>
 
-    <div class="grid">
-      <div class="gc" data-g="fantasia"        onclick="pick(this)"><span class="gc-i">🧙</span><span class="gc-n">Fantasía</span></div>
-      <div class="gc" data-g="romance"         onclick="pick(this)"><span class="gc-i">💞</span><span class="gc-n">Romance</span></div>
-      <div class="gc" data-g="thriller"        onclick="pick(this)"><span class="gc-i">🔪</span><span class="gc-n">Thriller</span></div>
-      <div class="gc" data-g="ciencia-ficcion" onclick="pick(this)"><span class="gc-i">🚀</span><span class="gc-n">Ciencia Ficción</span></div>
-      <div class="gc" data-g="autoayuda"       onclick="pick(this)"><span class="gc-i">🌱</span><span class="gc-n">Autoayuda</span></div>
-    </div>
-
-    <button id="go" onclick="enterVR()">Entrar a VR →</button>
   </div>
 </div>
 
 <!-- VR OVERLAY: todos los elementos HTML que deben verse en VR mode -->
 <div id="vr-overlay">
 
-
+<div id="book-tooltip"></div>
 
 <div id="hint">Mirá un libro o apuntá con el mando para ver detalles</div>
 
 </div><!-- /#vr-overlay -->
 
-<a-scene id="sc" loading-screen="backgroundColor: #0c0500; dotsColor: #c8a060" background="color:#14122a" renderer="antialias:true" vr-mode-ui="enabled:false">
+<a-scene id="sc" loading-screen="backgroundColor: #0c0500; dotsColor: #f7c35a" background="color:#14122a" renderer="antialias:true" vr-mode-ui="enabled:false">
 
   <a-entity id="rig" position="0 0 0">
 
@@ -186,17 +208,37 @@
       </a-cursor>
 
       <!-- ══════════ BOTÓN "Cambiar género" — HUD fijo, siempre visible en la sala ══════════ -->
-      <a-entity id="bback" visible="false" position="0 0.58 -1.5">
+      <a-entity id="bback" visible="false" position="-0.78 0.62 -1.5">
         <a-entity id="bback-hit" class="hit">
-          <a-plane class="hit" width="0.46" height="0.115" color="#6e4a30" opacity="0.97" roughness="0"></a-plane>
-          <a-plane width="0.48" height="0.13" color="#d9bd9a" opacity="0.35" position="0 0 -0.004"></a-plane>
-          <a-text value="&#8592; Cambiar genero" align="center" color="#f7ead8" width="0.42" wrap-count="18" position="0 0 0.006"></a-text>
+          <a-plane class="hit" width="0.46" height="0.115" color="#6b1020" opacity="0.97" roughness="0"></a-plane>
+          <a-plane width="0.48" height="0.13" color="#e88a7a" opacity="0.35" position="0 0 -0.004"></a-plane>
+          <a-text value="&#8592; Cambiar genero" align="center" color="#faf0e6" width="0.42" wrap-count="18" position="0 0 0.006"></a-text>
         </a-entity>
       </a-entity>
 
       <!-- ══════════ TOAST 3D: notificaciones (Kindle, favoritos) ══════════ -->
       <a-entity id="toast3d" visible="false" position="0 0.80 -1.5">
         <a-plane id="toast3d-canvas" width="1.0" height="0.15" roughness="0"></a-plane>
+      </a-entity>
+
+      <!-- ══════════ BOTÓN "?" Modo de uso ══════════ -->
+      <!-- ══════════ BOTÓN "?" Modo de uso — círculo ══════════ -->
+      <!-- ══════════ BOTÓN "? Modo de uso" — mismo estilo que bback ══════════ -->
+      <a-entity id="help-btn" visible="false" position="0.78 0.62 -1.5">
+        <a-entity id="help-btn-hit" class="hit">
+          <a-plane class="hit" width="0.46" height="0.115" color="#6b1020" opacity="0.97" roughness="0"></a-plane>
+          <a-plane width="0.48" height="0.13" color="#e88a7a" opacity="0.35" position="0 0 -0.004"></a-plane>
+          <a-text value="Modo de uso" align="center" color="#faf0e6" width="0.42" wrap-count="18" position="0 0 0.006"></a-text>
+        </a-entity>
+      </a-entity>
+
+      <!-- ══════════ PANEL TIPS DE USO ══════════ -->
+      <a-entity id="tips-panel" visible="false" position="0.65 0.085 -1.5">
+        <a-plane id="tips-canvas" width="0.72" height="0.87" roughness="0.6"></a-plane>
+        <!-- Botón X para cerrar -->
+        <a-entity id="tips-close-btn" class="hit" position="0.31 0.39 0.011">
+          <a-plane class="hit" width="0.09" height="0.09" color="#000" opacity="0"></a-plane>
+        </a-entity>
       </a-entity>
 
       <!-- ══════════ SELECTOR DE GÉNERO 3D: para cambiar de género sin salir de VR ══════════ -->
@@ -210,88 +252,84 @@
         <a-entity id="g3-confirm"         class="hit" position="0 -0.205 0.011"><a-plane class="hit" width="0.36" height="0.105" color="#000" opacity="0"></a-plane></a-entity>
       </a-entity>
 
-      <!-- ══════════ PANEL 3D: info del libro + reseñas (HUD fijo a 1.6m) ══════════ -->
-      <a-entity id="panel3d" visible="false" position="0 0 -1.6">
-
-        <!-- CARD IZQUIERDA: datos del libro — render via canvas para layout preciso -->
-        <a-entity position="-0.34 0 0">
-          <a-plane id="p3-canvas-left" width="0.64" height="1.0" roughness="0.6"></a-plane>
-
-          <!-- Hit invisible sobre el corazón dibujado en canvas -->
-          <a-entity id="p3-heart-btn" class="hit" position="0.238 0.43 0.011">
-            <a-plane class="hit" width="0.13" height="0.13" color="#000" opacity="0"></a-plane>
-          </a-entity>
-
-          <!-- Botón Cerrar — secundario: borde y letras blancas (dibujado en canvas), hit invisible -->
-          <a-entity id="p3-cerrar-btn" class="hit" position="-0.15 -0.42 0.011">
-            <a-plane class="hit" width="0.29" height="0.10" color="#000" opacity="0"></a-plane>
-          </a-entity>
-
-          <!-- Botón Leer muestra — primario: relleno marrón oscuro, letras crema (dibujado en canvas), hit invisible -->
-          <a-entity id="p3-leer-btn" class="hit" position="0.15 -0.42 0.011">
-            <a-plane class="hit" width="0.29" height="0.10" color="#000" opacity="0"></a-plane>
-          </a-entity>
-
-        </a-entity>
-
-        <!-- CARD DERECHA: reseñas — render via canvas -->
-        <a-entity position="0.34 0 0">
-          <a-plane id="p3-canvas-right" width="0.64" height="1.0" roughness="0.6"></a-plane>
-
-          <!-- Hit invisible sobre el botón de filtro (esquina sup der) -->
-          <a-entity id="p3-filter-btn" class="hit" position="0.18 0.43 0.011">
-            <a-plane class="hit" width="0.30" height="0.10" color="#000" opacity="0"></a-plane>
-          </a-entity>
-        </a-entity>
-
-      </a-entity>
-
-      <!-- ══════════ LECTOR 3D: muestra del libro (HUD fijo a 1.55m) ══════════ -->
-      <a-entity id="reader3d" visible="false" position="0 0 -1.55">
-        <!-- Canvas único: progreso, título, texto y pantalla final -->
-        <a-plane id="r3-canvas" width="1.3" height="1.0" roughness="0.6"></a-plane>
-
-        <!-- Hit invisible: ‹ Cerrar (esquina sup izq) -->
-        <a-entity id="r3-back" class="hit" position="-0.49 0.445 0.011">
-          <a-plane class="hit" width="0.26" height="0.08" color="#000" opacity="0"></a-plane>
-        </a-entity>
-
-        <!-- Hits invisibles: paginación inferior -->
-        <a-entity id="r3-prev" class="hit" position="-0.55 -0.45 0.011">
-          <a-plane class="hit" width="0.18" height="0.10" color="#000" opacity="0"></a-plane>
-        </a-entity>
-        <a-entity id="r3-next" class="hit" position="0.55 -0.45 0.011">
-          <a-plane class="hit" width="0.18" height="0.10" color="#000" opacity="0"></a-plane>
-        </a-entity>
-
-        <!-- Pantalla final: botones reales -->
-        <a-entity id="r3-end" visible="false">
-          <a-entity id="r3-volver-btn" class="hit" position="-0.31 -0.32 0.02">
-            <a-plane class="hit" width="0.48" height="0.13" color="#000" opacity="0"></a-plane>
-          </a-entity>
-          <a-entity id="r3-kindle-btn" class="hit" position="0.31 -0.32 0.02">
-            <a-plane class="hit" width="0.48" height="0.13" color="#000" opacity="0"></a-plane>
-          </a-entity>
-        </a-entity>
-      </a-entity>
-
     </a-camera>
 
-    <!-- MANO DERECHA: laser + raycaster explícito para Quest 2/3 -->
+    <!-- MANO DERECHA -->
     <a-entity id="rhand"
       laser-controls="hand:right; model:true"
-      raycaster="objects:.hit; far:15; showLine:true; lineColor:#c8a060; lineOpacity:0.9; interval:50"
+      raycaster="objects:.hit; far:15; showLine:true; lineColor:#f7c35a; lineOpacity:0.9; interval:50"
       position="0 0 0">
     </a-entity>
 
     <!-- MANO IZQUIERDA -->
     <a-entity id="lhand"
       laser-controls="hand:left; model:true"
-      raycaster="objects:.hit; far:15; showLine:true; lineColor:#c8a060; lineOpacity:0.7; interval:50"
+      raycaster="objects:.hit; far:15; showLine:true; lineColor:#f7c35a; lineOpacity:0.7; interval:50"
       position="0 0 0">
     </a-entity>
 
   </a-entity>
+
+  <!-- ══════════ PANEL 3D: info del libro — flota en el mundo sobre el libro ══════════ -->
+  <a-entity id="panel3d" visible="false" position="0 1.8 0">
+
+    <!-- CARD IZQUIERDA -->
+    <a-entity position="-0.34 0 0">
+      <a-plane id="p3-canvas-left" width="0.64" height="1.0" roughness="0.6"></a-plane>
+      <a-entity id="p3-heart-btn" class="hit" position="0.238 0.43 0.011">
+        <a-plane class="hit" width="0.13" height="0.13" color="#000" opacity="0"></a-plane>
+      </a-entity>
+      <a-entity id="p3-cerrar-btn" class="hit" position="-0.15 -0.42 0.011">
+        <a-plane class="hit" width="0.29" height="0.10" color="#000" opacity="0"></a-plane>
+      </a-entity>
+      <a-entity id="p3-leer-btn" class="hit" position="0.15 -0.42 0.011">
+        <a-plane class="hit" width="0.29" height="0.10" color="#000" opacity="0"></a-plane>
+      </a-entity>
+    </a-entity>
+
+    <!-- CARD DERECHA: reseñas -->
+    <a-entity position="0.34 0 0">
+      <a-plane id="p3-canvas-right" width="0.64" height="1.0" roughness="0.6"></a-plane>
+      <a-entity id="p3-filter-btn" class="hit" position="0.18 0.43 0.011">
+        <a-plane class="hit" width="0.30" height="0.10" color="#000" opacity="0"></a-plane>
+      </a-entity>
+      <!-- Scroll arriba ↑ -->
+      <a-entity id="p3-scroll-up" class="hit" position="-0.24 -0.44 0.011">
+        <a-plane class="hit" width="0.14" height="0.09" color="#000" opacity="0"></a-plane>
+      </a-entity>
+      <!-- Scroll abajo ↓ -->
+      <a-entity id="p3-scroll-down" class="hit" position="0.24 -0.44 0.011">
+        <a-plane class="hit" width="0.14" height="0.09" color="#000" opacity="0"></a-plane>
+      </a-entity>
+    </a-entity>
+
+  </a-entity>
+
+  <!-- ══════════ LECTOR 3D: muestra — flota en el mundo ══════════ -->
+  <a-entity id="reader3d" visible="false" position="0 1.8 0">
+    <a-plane id="r3-canvas" width="1.3" height="1.0" roughness="0.6"></a-plane>
+    <a-entity id="r3-back" class="hit" position="-0.49 0.445 0.011">
+      <a-plane class="hit" width="0.26" height="0.08" color="#000" opacity="0"></a-plane>
+    </a-entity>
+    <a-entity id="r3-prev" class="hit" position="-0.55 -0.45 0.011">
+      <a-plane class="hit" width="0.18" height="0.10" color="#000" opacity="0"></a-plane>
+    </a-entity>
+    <a-entity id="r3-next" class="hit" position="0.55 -0.45 0.011">
+      <a-plane class="hit" width="0.18" height="0.10" color="#000" opacity="0"></a-plane>
+    </a-entity>
+    <a-entity id="r3-end" visible="false">
+      <a-entity id="r3-volver-btn" class="hit" position="-0.31 -0.32 0.02">
+        <a-plane class="hit" width="0.48" height="0.13" color="#6b1020"></a-plane>
+        <a-plane width="0.49" height="0.135" color="#e88a7a" opacity="0.55" position="0 0 -0.002"></a-plane>
+        <a-text value="Volver a la mesa" align="center" color="#e88a7a" width="0.46" wrap-count="20" position="0 0 0.006"></a-text>
+      </a-entity>
+      <a-entity id="r3-kindle-btn" class="hit" position="0.31 -0.32 0.02">
+        <a-plane class="hit" width="0.48" height="0.13" color="#e88a7a"></a-plane>
+        <a-text value="Guardar en Kindle" align="center" color="#6b1020" width="0.46" wrap-count="20" position="0 0 0.006"></a-text>
+      </a-entity>
+    </a-entity>
+  </a-entity>
+
 
   <!-- ILUMINACIÓN CÁLIDA DE BIBLIOTECA -->
   <a-light type="ambient"     color="#ffffff" intensity="0.9"></a-light>
@@ -308,25 +346,25 @@
   <a-sky color="#1a0e05"></a-sky>
 
   <!-- PISO parquet madera cálida -->
-  <a-plane rotation="-90 0 0" width="22" height="22" color="#4a2810" roughness="0.85" metalness="0.02"></a-plane>
+  <a-plane rotation="-90 0 0" width="22" height="22" color="#7a4030" roughness="0.85" metalness="0.02"></a-plane>
   <!-- Alfombra central -->
-  <a-plane rotation="-90 0 0" width="5" height="5" position="0 0.01 0" color="#6b2010" roughness="0.95" opacity="0.7"></a-plane>
+  <a-plane rotation="-90 0 0" width="5" height="5" position="0 0.01 0" color="#5a2818" roughness="0.95" opacity="0.7"></a-plane>
 
   <!-- PAREDES madera oscura cálida -->
-  <a-box position=" 0   3.5 -9.1" scale="22 7 0.25" color="#2a1508"></a-box>
-  <a-box position="-9.1 3.5  0  " scale="0.25 7 22"  color="#251308"></a-box>
-  <a-box position=" 9.1 3.5  0  " scale="0.25 7 22"  color="#251308"></a-box>
-  <a-box position=" 0   3.5  9.1" scale="22 7 0.25"  color="#2a1508"></a-box>
+  <a-box position=" 0   3.5 -9.1" scale="22 7 0.25" color="#2a1a1c"></a-box>
+  <a-box position="-9.1 3.5  0  " scale="0.25 7 22"  color="#2a1a1c"></a-box>
+  <a-box position=" 9.1 3.5  0  " scale="0.25 7 22"  color="#2a1a1c"></a-box>
+  <a-box position=" 0   3.5  9.1" scale="22 7 0.25"  color="#2a1a1c"></a-box>
   <!-- TECHO con vigas -->
-  <a-box position=" 0   7.1  0  " scale="22 0.25 22" color="#1a0a03"></a-box>
+  <a-box position=" 0   7.1  0  " scale="22 0.25 22" color="#1a1214"></a-box>
   <!-- Vigas del techo -->
-  <a-box position=" 0   6.9 -4" scale="22 0.18 0.25" color="#150802"></a-box>
-  <a-box position=" 0   6.9  0" scale="22 0.18 0.25" color="#150802"></a-box>
-  <a-box position=" 0   6.9  4" scale="22 0.18 0.25" color="#150802"></a-box>
+  <a-box position=" 0   6.9 -4" scale="22 0.18 0.25" color="#221416"></a-box>
+  <a-box position=" 0   6.9  0" scale="22 0.18 0.25" color="#221416"></a-box>
+  <a-box position=" 0   6.9  4" scale="22 0.18 0.25" color="#221416"></a-box>
   <!-- Zócalo paredes -->
-  <a-box position=" 0   0.2 -9.0" scale="22 0.4 0.1" color="#1a0a02"></a-box>
-  <a-box position="-9.0 0.2  0  " scale="0.1 0.4 22"  color="#1a0a02"></a-box>
-  <a-box position=" 9.0 0.2  0  " scale="0.1 0.4 22"  color="#1a0a02"></a-box>
+  <a-box position=" 0   0.2 -9.0" scale="22 0.4 0.1" color="#1e1214"></a-box>
+  <a-box position="-9.0 0.2  0  " scale="0.1 0.4 22"  color="#1e1214"></a-box>
+  <a-box position=" 9.0 0.2  0  " scale="0.1 0.4 22"  color="#1e1214"></a-box>
 
   <!-- CANDELABRO decorativo en el techo -->
   <a-cylinder position="0 6.5 0" radius="0.04" height="0.6" color="#5a4020"></a-cylinder>
@@ -341,7 +379,7 @@
   <!-- Lámpara base -->
   <a-cylinder position="5 0.75 4" radius="0.04" height="0.35" color="#4a3010"></a-cylinder>
   <!-- Pantalla lámpara (cono) -->
-  <a-cone position="5 1.10 4" radius-bottom="0.22" radius-top="0.08" height="0.28" color="#c8a060" opacity="0.85" roughness="0.3"></a-cone>
+  <a-cone position="5 1.10 4" radius-bottom="0.22" radius-top="0.08" height="0.28" color="#f7c35a" opacity="0.85" roughness="0.3"></a-cone>
   <!-- Luz cálida de la lámpara -->
   <a-sphere position="5 0.98 4" radius="0.04" color="#ffee88" material="emissive:#ffcc44; emissiveIntensity:1.2"></a-sphere>
 
@@ -350,7 +388,7 @@
   <a-cylinder position="-5 0.28 4" radius="0.06" height="0.55" color="#3d1f0a"></a-cylinder>
   <a-cylinder position="-5 0.03 4" radius="0.22" height="0.04" color="#2e1608"></a-cylinder>
   <a-cylinder position="-5 0.75 4" radius="0.04" height="0.35" color="#4a3010"></a-cylinder>
-  <a-cone position="-5 1.10 4" radius-bottom="0.22" radius-top="0.08" height="0.28" color="#c8a060" opacity="0.85" roughness="0.3"></a-cone>
+  <a-cone position="-5 1.10 4" radius-bottom="0.22" radius-top="0.08" height="0.28" color="#f7c35a" opacity="0.85" roughness="0.3"></a-cone>
   <a-sphere position="-5 0.98 4" radius="0.04" color="#ffee88" material="emissive:#ffcc44; emissiveIntensity:1.2"></a-sphere>
 
   <!-- MESITA CON LÁMPARA — esquina derecha trasera -->
@@ -358,7 +396,7 @@
   <a-cylinder position="5 0.28 -5" radius="0.06" height="0.55" color="#3d1f0a"></a-cylinder>
   <a-cylinder position="5 0.03 -5" radius="0.22" height="0.04" color="#2e1608"></a-cylinder>
   <a-cylinder position="5 0.75 -5" radius="0.04" height="0.35" color="#4a3010"></a-cylinder>
-  <a-cone position="5 1.10 -5" radius-bottom="0.22" radius-top="0.08" height="0.28" color="#c8a060" opacity="0.85" roughness="0.3"></a-cone>
+  <a-cone position="5 1.10 -5" radius-bottom="0.22" radius-top="0.08" height="0.28" color="#f7c35a" opacity="0.85" roughness="0.3"></a-cone>
   <a-sphere position="5 0.98 -5" radius="0.04" color="#ffee88" material="emissive:#ffcc44; emissiveIntensity:1.2"></a-sphere>
 
   <!-- MESITA CON LÁMPARA — esquina izquierda trasera -->
@@ -366,7 +404,7 @@
   <a-cylinder position="-5 0.28 -5" radius="0.06" height="0.55" color="#3d1f0a"></a-cylinder>
   <a-cylinder position="-5 0.03 -5" radius="0.22" height="0.04" color="#2e1608"></a-cylinder>
   <a-cylinder position="-5 0.75 -5" radius="0.04" height="0.35" color="#4a3010"></a-cylinder>
-  <a-cone position="-5 1.10 -5" radius-bottom="0.22" radius-top="0.08" height="0.28" color="#c8a060" opacity="0.85" roughness="0.3"></a-cone>
+  <a-cone position="-5 1.10 -5" radius-bottom="0.22" radius-top="0.08" height="0.28" color="#f7c35a" opacity="0.85" roughness="0.3"></a-cone>
   <a-sphere position="-5 0.98 -5" radius="0.04" color="#ffee88" material="emissive:#ffcc44; emissiveIntensity:1.2"></a-sphere>
 
   <!-- SILLÓN esquina derecha -->
@@ -402,19 +440,14 @@
 
   <a-text id="glabel" value="" align="center" color="#c4a8ff" width="5" position="0 2.6 0" side="double"></a-text>
 
-  <!-- ══════════ TOOLTIP 3D: nombre del libro en hover, sigue al libro y mira a la cámara ══════════ -->
-  <a-entity id="tooltip3d" visible="false">
-    <a-plane id="tooltip3d-canvas" width="0.48" height="0.104" roughness="0"></a-plane>
-  </a-entity>
-
-  <a-box id="b0" class="hit" position=" 0.000 1.00 -0.850" rotation="-20   0 0"   width="0.20" height="0.30" depth="0.055" color="#e74c3c"></a-box>
-  <a-box id="b1" class="hit" position=" 0.601 1.00 -0.601" rotation="-20 -45 0"   width="0.20" height="0.30" depth="0.055" color="#3498db"></a-box>
-  <a-box id="b2" class="hit" position=" 0.850 1.00  0.000" rotation="-20 -90 0"   width="0.20" height="0.30" depth="0.055" color="#2ecc71"></a-box>
-  <a-box id="b3" class="hit" position=" 0.601 1.00  0.601" rotation="-20 -135 0"  width="0.20" height="0.30" depth="0.055" color="#f39c12"></a-box>
-  <a-box id="b4" class="hit" position=" 0.000 1.00  0.850" rotation="-20 180 0"   width="0.20" height="0.30" depth="0.055" color="#9b59b6"></a-box>
-  <a-box id="b5" class="hit" position="-0.601 1.00  0.601" rotation="-20 135 0"   width="0.20" height="0.30" depth="0.055" color="#1abc9c"></a-box>
-  <a-box id="b6" class="hit" position="-0.850 1.00  0.000" rotation="-20  90 0"   width="0.20" height="0.30" depth="0.055" color="#e67e22"></a-box>
-  <a-box id="b7" class="hit" position="-0.601 1.00 -0.601" rotation="-20  45 0"   width="0.20" height="0.30" depth="0.055" color="#e91e63"></a-box>
+  <a-box id="b0" class="hit" visible="false" position=" 0.000 1.08 -1.100" rotation="0   0 0"   width="0.20" height="0.30" depth="0.055" color="#e74c3c"></a-box>
+  <a-box id="b1" class="hit" visible="false" position=" 0.778 1.08 -0.778" rotation="0 -45 0"   width="0.20" height="0.30" depth="0.055" color="#3498db"></a-box>
+  <a-box id="b2" class="hit" visible="false" position=" 1.100 1.08  0.000" rotation="0 -90 0"   width="0.20" height="0.30" depth="0.055" color="#2ecc71"></a-box>
+  <a-box id="b3" class="hit" visible="false" position=" 0.778 1.08  0.778" rotation="0 -135 0"  width="0.20" height="0.30" depth="0.055" color="#f39c12"></a-box>
+  <a-box id="b4" class="hit" visible="false" position=" 0.000 1.08  1.100" rotation="0 180 0"   width="0.20" height="0.30" depth="0.055" color="#9b59b6"></a-box>
+  <a-box id="b5" class="hit" visible="false" position="-0.778 1.08  0.778" rotation="0 135 0"   width="0.20" height="0.30" depth="0.055" color="#1abc9c"></a-box>
+  <a-box id="b6" class="hit" visible="false" position="-1.100 1.08  0.000" rotation="0  90 0"   width="0.20" height="0.30" depth="0.055" color="#e67e22"></a-box>
+  <a-box id="b7" class="hit" visible="false" position="-0.778 1.08 -0.778" rotation="0  45 0"   width="0.20" height="0.30" depth="0.055" color="#e91e63"></a-box>
 
   <!-- panel removido: ahora es 2D HTML -->
   <a-assets>
@@ -465,7 +498,7 @@ const DB={
   romance:[
     {t:'Orgullo y Prejuicio',      a:'Jane Austen',        y:1813, p:'$9.99', s:'Elizabeth Bennet y el altivo Mr. Darcy chocan en la sociedad inglesa. Ironía y romance clásico.',       isbn:'9780141439518'},
     {t:'Outlander',                a:'Diana Gabaldon',     y:1991, p:'$15.99',s:'Una enfermera de 1945 viaja al siglo XVIII de Escocia y se enamora de un guerrero highlander.',          isbn:'9780440212560'},
-    {t:'Me Before You',            a:'Jojo Moyes',         y:2012, p:'$13.99',s:'Lou y Will aprenden lo que significa vivir plenamente. Una historia que rompe el corazón.',              isbn:'0143124544'},
+    {t:'Me Before You',            a:'Jojo Moyes',         y:2012, p:'$13.99',s:'Lou y Will aprenden lo que significa vivir plenamente. Una historia que rompe el corazón.',              isbn:'9780143124542'},
     {t:'El Tiempo Entre Costuras', a:'María Dueñas',       y:2009, p:'$14.99',s:'Sira Quiroga, modista española, se convierte en espía durante la Segunda Guerra Mundial.',              isbn:'9788408081418'},
     {t:'El Diario de Noah',        a:'Nicholas Sparks',    y:1996, p:'$12.99',s:'Noah y Allie se enamoran un verano. Años después, él le lee una historia para que ella recuerde.',      isbn:'9780446605236'},
     {t:'Crepúsculo',               a:'Stephenie Meyer',    y:2005, p:'$11.99',s:'Bella Swan llega a Forks y se enemora del misterioso Edward Cullen en un romance sobrenatural.',        isbn:'9780316015844'},
@@ -473,7 +506,7 @@ const DB={
     {t:'La Ladrona de Libros',     a:'Markus Zusak',       y:2005, p:'$13.99',s:'Narrada por la Muerte, es la historia de Liesel en la Alemania nazi que halla consuelo en los libros.',isbn:'9780375842207'},
   ],
   thriller:[
-    {t:'El Codigo Da Vinci',           a:'Dan Brown',        y:2003, p:'$13.99',s:'Un asesinato en el Louvre desencadena una busqueda del Santo Grial llena de conspiraciones.',        isbn:'0385504209'},
+    {t:'El Codigo Da Vinci',           a:'Dan Brown',        y:2003, p:'$13.99',s:'Un asesinato en el Louvre desencadena una busqueda del Santo Grial llena de conspiraciones.',        isbn:'9780374742788'},
     {t:'Desaparecida',                 a:'Gillian Flynn',    y:2012, p:'$12.99',s:'Amy desaparece el dia de su aniversario. Un thriller psicologico de manipulacion perfecta.',          isbn:'9780307588371'},
     {t:'La Chica del Tren',            a:'Paula Hawkins',    y:2015, p:'$12.99',s:'Rachel observa desde el tren una pareja perfecta hasta que la mujer desaparece misteriosamente.',    isbn:'9781594634024'},
     {t:'El Silencio de los Inocentes', a:'Thomas Harris',    y:1988, p:'$11.99',s:'La agente Clarice debe consultar al temible Dr. Lecter para atrapar a un asesino serial.',           isbn:'9780312924584'},
@@ -511,132 +544,132 @@ const REVIEWS = {
   fantasia:[
     [{u:'Mara_G',t:'hace 2 días',   r:'Increíble, no pude soltar el libro en toda la noche.',p:5},
      {u:'Tomás R',t:'hace 1 semana', r:'La magia está muy bien construida, te atrapa desde la primera página.',p:4},
-     {u:'Luci.vr',t:'hace 3 semanas',r:'El final me dejó sin palabras. Totalmente recomendado.',p:3}],
+     {u:'Luci.vr',t:'hace 3 semanas',r:'El final me dejó sin palabras. Totalmente recomendado.',p:3},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Santi_B',t:'hace 4 días',   r:'Sanderson es un genio creando sistemas de magia únicos.',p:5},
      {u:'Vale M', t:'hace 2 semanas', r:'Me enganchó de inmediato, lo terminé en un fin de semana.'},
-     {u:'Diego.f',t:'hace 1 mes',    r:'Excelente worldbuilding, personajes muy bien desarrollados.',p:4}],
+     {u:'Diego.f',t:'hace 1 mes',    r:'Excelente worldbuilding, personajes muy bien desarrollados.',p:4},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Caro_P', t:'hace 1 día',    r:'Una joya de la literatura española, atmosférica y misteriosa.'},
      {u:'Nico R', t:'hace 5 días',   r:'Me enamoré de Barcelona leyendo este libro.'},
-     {u:'Sol.vr', t:'hace 2 semanas',r:'El mejor libro que leí en mucho tiempo, sin dudas.'}],
+     {u:'Sol.vr', t:'hace 2 semanas',r:'El mejor libro que leí en mucho tiempo, sin dudas.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Juli_M', t:'hace 3 días',   r:'Perfecto para los amantes de la fantasía épica clásica.'},
      {u:'Fer B',  t:'hace 1 semana', r:'Sorprendente que lo haya escrito siendo tan joven.'},
-     {u:'Anto.r', t:'hace 1 mes',    r:'Los dragones están muy bien descritos, te los imaginás fácil.'}],
+     {u:'Anto.r', t:'hace 1 mes',    r:'Los dragones están muy bien descritos, te los imaginás fácil.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Ceci_V', t:'hace 2 días',   r:'Acción constante, no podés parar de leer.'},
      {u:'Maxi T', t:'hace 1 semana', r:'Un clásico del género distópico juvenil.'},
-     {u:'Paz.vr', t:'hace 3 semanas',r:'Katniss es uno de los mejores personajes que leí.'}],
+     {u:'Paz.vr', t:'hace 3 semanas',r:'Katniss es uno de los mejores personajes que leí.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Leo_R',  t:'hace 1 semana', r:'Un libro que te transporta a otro mundo completamente.'},
      {u:'Kim M',  t:'hace 2 semanas',r:'Ende es un maestro narrando aventuras para todas las edades.'},
-     {u:'Beto.f', t:'hace 1 mes',    r:'Lo releí tres veces y siempre encuentro algo nuevo.'}],
+     {u:'Beto.f', t:'hace 1 mes',    r:'Lo releí tres veces y siempre encuentro algo nuevo.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Ana_S',  t:'hace 3 días',   r:'La obra maestra de la fantasía, imprescindible.'},
      {u:'Rafa B', t:'hace 2 semanas',r:'El legendarium de Tolkien no tiene igual en la literatura.'},
-     {u:'Gabi.r', t:'hace 1 mes',    r:'Me llevó dos meses leerlo pero valió cada página.'}],
+     {u:'Gabi.r', t:'hace 1 mes',    r:'Me llevó dos meses leerlo pero valió cada página.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Flor_M', t:'hace 1 día',    r:'Un libro que cambia la perspectiva de la vida.'},
      {u:'Iván T', t:'hace 1 semana', r:'Muy filosófico pero fácil de leer, muy recomendable.'},
-     {u:'Rosa.v', t:'hace 3 semanas',r:'Lo releeré siempre que necesite motivación.'}],
+     {u:'Rosa.v', t:'hace 3 semanas',r:'Lo releeré siempre que necesite motivación.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
   ],
   romance:[
     [{u:'Pau_G',  t:'hace 1 día',    r:'Un clásico eterno, Austen es incomparable.'},
      {u:'Lu M',   t:'hace 1 semana', r:'Darcy es el personaje más icónico de la literatura romántica.'},
-     {u:'Ceci.v', t:'hace 2 semanas',r:'Me reí y lloré en partes iguales, una joya.'}],
+     {u:'Ceci.v', t:'hace 2 semanas',r:'Me reí y lloré en partes iguales, una joya.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Clau_B', t:'hace 3 días',   r:'Claire y Jamie son la pareja más épica que leí.'},
      {u:'Sofi R', t:'hace 2 semanas',r:'El detalle histórico es impresionante, muy bien documentado.'},
-     {u:'Mari.f', t:'hace 1 mes',    r:'Imposible no enamorarse de esta historia.'}],
+     {u:'Mari.f', t:'hace 1 mes',    r:'Imposible no enamorarse de esta historia.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Nati_V', t:'hace 2 días',   r:'Lloré como nunca con un libro. Hermoso y desgarrador.'},
      {u:'Gabi M', t:'hace 4 días',   r:'Jojo Moyes tiene un talento especial para las emociones.'},
-     {u:'Sil.vr', t:'hace 3 semanas',r:'La historia te hace reflexionar sobre qué significa vivir.'}],
+     {u:'Sil.vr', t:'hace 3 semanas',r:'La historia te hace reflexionar sobre qué significa vivir.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Vero_P', t:'hace 1 día',    r:'Una novela histórica con mucho corazón y aventura.'},
      {u:'Romi T', t:'hace 1 semana', r:'Sira es un personaje extraordinario, muy bien construido.'},
-     {u:'Ali.v',  t:'hace 1 mes',    r:'Me tuvo pegada al libro durante días sin poder parar.'}],
+     {u:'Ali.v',  t:'hace 1 mes',    r:'Me tuvo pegada al libro durante días sin poder parar.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Caro_M', t:'hace 2 días',   r:'Una historia de amor que te deja huella para siempre.'},
      {u:'Orne R', t:'hace 5 días',   r:'Sparks siempre sabe cómo llegar directo al corazón.'},
-     {u:'Dana.f', t:'hace 2 semanas',r:'Lo leí en un día, no pude parar de llorar.'}],
+     {u:'Dana.f', t:'hace 2 semanas',r:'Lo leí en un día, no pude parar de llorar.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Vale_S', t:'hace 3 días',   r:'Me enganchó desde la primera página, muy adictivo.'},
      {u:'Belu T', t:'hace 1 semana', r:'Edward y Bella son un clásico generacional.'},
-     {u:'Cris.r', t:'hace 1 mes',    r:'Mi libro de cabecera de la adolescencia.'}],
+     {u:'Cris.r', t:'hace 1 mes',    r:'Mi libro de cabecera de la adolescencia.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Meli_V', t:'hace 1 día',    r:'Hazel y Gus son la pareja más adorable de la literatura YA.'},
      {u:'Tami M', t:'hace 4 días',   r:'John Green escribe sobre la vida joven con mucha verdad.'},
-     {u:'Juli.v', t:'hace 2 semanas',r:'Hermoso y triste a la vez, te cambia la perspectiva.'}],
+     {u:'Juli.v', t:'hace 2 semanas',r:'Hermoso y triste a la vez, te cambia la perspectiva.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Noe_P',  t:'hace 2 días',   r:'La Muerte como narradora es el toque más original que vi.'},
      {u:'Lara T', t:'hace 1 semana', r:'Un libro sobre el poder de las palabras, precioso.'},
-     {u:'Rochi.f',t:'hace 1 mes',    r:'Lloré muchísimo pero lo recomendaría mil veces.',p:5}],
+     {u:'Rochi.f',t:'hace 1 mes',    r:'Lloré muchísimo pero lo recomendaría mil veces.',p:5},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
   ],
   thriller:[
     [{u:'Pablo_G',t:'hace 1 día',    r:'Un thriller que no podés soltar, giros inesperados.',p:3},
      {u:'Mateo R',t:'hace 3 días',   r:'Dan Brown es el maestro de los thrillers históricos.',p:4},
-     {u:'Dami.v', t:'hace 2 semanas',r:'Me tuvo en vilo hasta la última página.'}],
+     {u:'Dami.v', t:'hace 2 semanas',r:'Me tuvo en vilo hasta la última página.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Barbi_M',t:'hace 2 días',   r:'Amy Dunne es el personaje más perturbador que leí.',p:5},
      {u:'Lean T', t:'hace 5 días',   r:'Gillian Flynn escribe thrillers psicológicos brillantes.'},
-     {u:'Fede.r', t:'hace 3 semanas',r:'El giro a la mitad del libro es devastador.'}],
+     {u:'Fede.r', t:'hace 3 semanas',r:'El giro a la mitad del libro es devastador.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Nico_V', t:'hace 1 día',    r:'Muy parecido a Gone Girl en el estilo, igual de adictivo.'},
      {u:'Ceci M', t:'hace 1 semana', r:'Paula Hawkins construye el suspenso perfectamente.'},
-     {u:'Juli.f', t:'hace 1 mes',    r:'Los tres narradores están muy bien utilizados.'}],
+     {u:'Juli.f', t:'hace 1 mes',    r:'Los tres narradores están muy bien utilizados.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Ariel_P',t:'hace 3 días',   r:'Hannibal Lecter es el villano más fascinante de la ficción.',p:4},
      {u:'Diego T',t:'hace 2 semanas',r:'Clarice Starling es un personaje increíblemente fuerte.',p:3},
-     {u:'Seba.r', t:'hace 1 mes',    r:'Un thriller que marcó un antes y un después en el género.'}],
+     {u:'Seba.r', t:'hace 1 mes',    r:'Un thriller que marcó un antes y un después en el género.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Mora_S', t:'hace 2 días',   r:'El final te deja con la boca abierta, no lo vi venir.'},
      {u:'Luli T', t:'hace 4 días',   r:'Alex Michaelides es un escritor con mucho talento.'},
-     {u:'Rami.v', t:'hace 3 semanas',r:'Muy bien escrito, el ritmo no baja nunca.'}],
+     {u:'Rami.v', t:'hace 3 semanas',r:'Muy bien escrito, el ritmo no baja nunca.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Ezequi_M',t:'hace 1 día',   r:'King en su versión más pura e inquietante.',p:5},
      {u:'Hugo R', t:'hace 1 semana', r:'Annie Wilkes es aterradora, muy bien construida.'},
-     {u:'Claudi.f',t:'hace 1 mes',   r:'Te produce ansiedad real mientras lo lés.',p:4}],
+     {u:'Claudi.f',t:'hace 1 mes',   r:'Te produce ansiedad real mientras lo lés.',p:4},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Guille_V',t:'hace 2 días',  r:'Harlan Coben no defrauda nunca, giro tras giro.',p:5},
      {u:'Robi T', t:'hace 5 días',   r:'Un ritmo vertiginoso, lo terminé en dos días.'},
-     {u:'Santi.r',t:'hace 2 semanas',r:'La trama es muy original y bien ejecutada.',p:3}],
+     {u:'Santi.r',t:'hace 2 semanas',r:'La trama es muy original y bien ejecutada.',p:3},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Hernán_P',t:'hace 1 día',   r:'Un clásico imprescindible, más vigente que nunca.',p:4},
      {u:'Patri T',t:'hace 3 días',   r:'Orwell era un visionario, da miedo lo actual que es.',p:5},
-     {u:'Clau.r', t:'hace 1 mes',    r:'Hay que leerlo al menos una vez en la vida.'}],
+     {u:'Clau.r', t:'hace 1 mes',    r:'Hay que leerlo al menos una vez en la vida.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
   ],
   'ciencia-ficcion':[
     [{u:'Rodri_M',t:'hace 2 días',   r:'La mejor novela de ciencia ficción de todos los tiempos.',p:4},
      {u:'Lean T', t:'hace 1 semana', r:'El worldbuilding de Herbert es absolutamente monumental.'},
-     {u:'Pablo.v',t:'hace 1 mes',    r:'Tardé en entrar pero después no pude parar.',p:3}],
+     {u:'Pablo.v',t:'hace 1 mes',    r:'Tardé en entrar pero después no pude parar.',p:3},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Gonza_S',t:'hace 1 día',    r:'Asimov es el padre de la ciencia ficción moderna.',p:5},
      {u:'Tomi R', t:'hace 4 días',   r:'La psicohistoria es un concepto brillante y original.'},
-     {u:'Colo.f', t:'hace 3 semanas',r:'Una saga que hay que leer completa, sin dudas.'}],
+     {u:'Colo.f', t:'hace 3 semanas',r:'Una saga que hay que leer completa, sin dudas.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Marce_V',t:'hace 3 días',   r:'Divertido, emocionante y muy bien documentado científicamente.',p:4},
      {u:'Euge T', t:'hace 1 semana', r:'Mark Watney es el protagonista más carismático que leí.'},
-     {u:'Maxi.r', t:'hace 1 mes',    r:'Lo leí de un tirón, no pude parar hasta saber cómo terminaba.'}],
+     {u:'Maxi.r', t:'hace 1 mes',    r:'Lo leí de un tirón, no pude parar hasta saber cómo terminaba.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Flavia_M',t:'hace 2 días',  r:'Una pregunta filosófica que te queda dando vueltas días.',p:5},
      {u:'Hernan R',t:'hace 5 días',  r:'Philip K. Dick era un genio adelantado a su tiempo.',p:3},
-     {u:'Silvi.v',t:'hace 2 semanas',r:'Muy cortito pero muy profundo, se relée mucho.',p:4}],
+     {u:'Silvi.v',t:'hace 2 semanas',r:'Muy cortito pero muy profundo, se relée mucho.',p:4},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Dario_P',t:'hace 1 día',    r:'El libro que definió el cyberpunk, imprescindible.',p:5},
      {u:'Ricky T',t:'hace 1 semana', r:'Gibson tiene una forma de escribir muy visual y envolvente.',p:4},
-     {u:'Gonza.f',t:'hace 1 mes',    r:'Difícil de leer al principio pero vale cada esfuerzo.',p:5}],
+     {u:'Gonza.f',t:'hace 1 mes',    r:'Difícil de leer al principio pero vale cada esfuerzo.',p:5},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Nico_V', t:'hace 3 días',   r:'Una perspectiva de la ciencia ficción completamente diferente.'},
      {u:'Ale T',  t:'hace 2 semanas',r:'Liu Cixin tiene una imaginación sin límites, alucinante.'},
-     {u:'Seba.r', t:'hace 1 mes',    r:'El mejor libro de CF que leí en los últimos años.'}],
+     {u:'Seba.r', t:'hace 1 mes',    r:'El mejor libro de CF que leí en los últimos años.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Tati_M', t:'hace 1 día',    r:'Un libro que te hace pensar en el valor real de la cultura.'},
      {u:'Manu R', t:'hace 4 días',   r:'Bradbury escribía con una poesía única en el género.'},
-     {u:'Lauri.v',t:'hace 3 semanas',r:'Muy corto pero tremendamente impactante.',p:3}],
+     {u:'Lauri.v',t:'hace 3 semanas',r:'Muy corto pero tremendamente impactante.',p:3},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Lucas_P',t:'hace 2 días',   r:'El humor de Adams es único, me reí en voz alta leyendo.',p:4},
      {u:'Esteban T',t:'hace 1 semana',r:'42 es la respuesta a todo. Genial y absurdo a la vez.',p:5},
-     {u:'Mili.r', t:'hace 1 mes',    r:'Lo releeré siempre que necesite reírme de verdad.'}],
+     {u:'Mili.r', t:'hace 1 mes',    r:'Lo releeré siempre que necesite reírme de verdad.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
   ],
   autoayuda:[
     [{u:'Caro_M', t:'hace 1 día',    r:'Me cambió la forma de ver la vida completamente.'},
      {u:'Romi T', t:'hace 3 días',   r:'Tolle explica conceptos profundos de forma muy accesible.'},
-     {u:'Flor.v', t:'hace 2 semanas',r:'Lo releo cada vez que me siento perdida, siempre ayuda.'}],
+     {u:'Flor.v', t:'hace 2 semanas',r:'Lo releo cada vez que me siento perdida, siempre ayuda.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Jorge_S',t:'hace 2 días',   r:'El libro de productividad y liderazgo más completo que leí.',p:4},
      {u:'Rafa M', t:'hace 1 semana', r:'Los 7 hábitos transformaron mi forma de trabajar y vivir.'},
-     {u:'Clau.f', t:'hace 1 mes',    r:'Un clásico que debería leerse en la escuela.'}],
+     {u:'Clau.f', t:'hace 1 mes',    r:'Un clásico que debería leerse en la escuela.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Hecto_V',t:'hace 3 días',   r:'Hill entrevistó a los más exitosos del siglo, imperdible.',p:5},
      {u:'Osval T',t:'hace 2 semanas',r:'Algunos capítulos son muy inspiradores, te dan energía.',p:3},
-     {u:'Arma.r', t:'hace 1 mes',    r:'Lo releo cada año para mantener la mentalidad correcta.'}],
+     {u:'Arma.r', t:'hace 1 mes',    r:'Lo releo cada año para mantener la mentalidad correcta.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Nora_P', t:'hace 1 día',    r:'Frankl encontró sentido en lo peor imaginable. Inspirador.'},
      {u:'Elisa T',t:'hace 4 días',   r:'Un libro que te pone en perspectiva cuando tenés problemas.',p:4},
-     {u:'Beatri.v',t:'hace 3 semanas',r:'Lo recomendaría a cualquier persona en cualquier momento.',p:5}],
+     {u:'Beatri.v',t:'hace 3 semanas',r:'Lo recomendaría a cualquier persona en cualquier momento.',p:5},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Bruno_M',t:'hace 2 días',   r:'El mejor libro sobre hábitos que existe, muy práctico.',p:4},
      {u:'Luca T', t:'hace 1 semana', r:'Clear explica la ciencia detrás de los hábitos muy bien.'},
-     {u:'Fer.r',  t:'hace 1 mes',    r:'Cambié tres hábitos malos gracias a este libro.'}],
+     {u:'Fer.r',  t:'hace 1 mes',    r:'Cambié tres hábitos malos gracias a este libro.'},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Igna_S', t:'hace 1 día',    r:'Me abrió la mente sobre cómo organizar el tiempo.'},
      {u:'Javi T', t:'hace 3 días',   r:'No todo es aplicable pero las ideas base son muy valiosas.'},
-     {u:'Pedro.v',t:'hace 2 semanas',r:'Ferriss es polémico pero sus métodos funcionan.',p:5}],
+     {u:'Pedro.v',t:'hace 2 semanas',r:'Ferriss es polémico pero sus métodos funcionan.',p:5},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Ruben_V',t:'hace 2 días',   r:'Directo, honesto y sin vueltas, justo lo que necesitaba.',p:3},
      {u:'Sebas T',t:'hace 5 días',   r:'Manson dice lo que nadie se anima, muy refrescante.',p:4},
-     {u:'Marti.r',t:'hace 1 mes',    r:'Me ayudó a dejar de preocuparme por lo que no importa.',p:5}],
+     {u:'Marti.r',t:'hace 1 mes',    r:'Me ayudó a dejar de preocuparme por lo que no importa.',p:5},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
     [{u:'Alber_P',t:'hace 1 día',    r:'Cambió completamente mi relación con el dinero.',p:4},
      {u:'Guill T',t:'hace 4 días',   r:'Muy fácil de leer y lleno de consejos prácticos.',p:5},
-     {u:'Nestor.v',t:'hace 3 semanas',r:'El libro que desearía haber leído a los 20 años.',p:3}],
+     {u:'Nestor.v',t:'hace 3 semanas',r:'El libro que desearía haber leído a los 20 años.',p:3},{u:'Rod_S',t:'hace 6 días',r:'El sistema de magia es de los más originales que leí.',p:5},{u:'Tere_M',t:'hace 2 semanas',r:'Lento al principio pero después no pude parar.',p:3},{u:'Nico_F',t:'hace 1 mes',r:'Definitivamente lo volvería a leer.',p:4},{u:'Eli_B',t:'hace 2 meses',r:'Los personajes secundarios son igual de interesantes.',p:4},{u:'Fer_V',t:'hace 3 meses',r:'La ambientación es perfecta, te metés en el mundo.',p:5},{u:'Cami_T',t:'hace 4 meses',r:'Extenso pero cada página vale la pena.',p:4},{u:'Bru_R',t:'hace 5 meses',r:'Lo recomiendo sin dudar a cualquier lector.',p:5}],
   ]
 };
 
@@ -648,6 +681,7 @@ let currentOpenedBookIndex = null; // Track del libro abierto para evitar bugs v
 // Estado del panel3d (reseñas)
 let p3RevList   = [];
 let p3RevIndex  = 0;
+let p3RevScroll = 0;  // índice del primer review visible (scroll virtual)
 let p3SortMode  = 'relevancia';
 let p3HeartFilled = false;
 let p3CurrentBook = null;
@@ -703,45 +737,6 @@ function makeHUDAlwaysOnTop(rootEl){
   else rootEl.addEventListener('loaded', function(){ apply(rootEl); });
 }
 
-// Aplica el override de profundidad a UN solo elemento (no recursivo), con
-// reintento corto por si el material todavía no está listo tras un setAttribute.
-function applyDepthOverride(el){
-  if(!el) return;
-  function tryApply(retries){
-    const mesh = el.getObject3D && el.getObject3D('mesh');
-    if(mesh && mesh.material){
-      mesh.material.depthTest  = false;
-      mesh.material.depthWrite = false;
-      mesh.renderOrder = 999;
-      mesh.material.needsUpdate = true;
-    } else if(retries > 0){
-      setTimeout(function(){ tryApply(retries-1); }, 40);
-    }
-  }
-  tryApply(8);
-}
-
-// Oculta/muestra la línea visual del láser de los mandos del Quest.
-// Necesario porque los paneles HUD (cards, lector) usan depthTest:false
-// para no quedar tapados por la mesa, pero eso hace que el láser largo
-// del raycaster se vea atravesando la card en vez de cortarse en ella.
-function setControllerLaserVisible(visible){
-  ['rhand','lhand'].forEach(function(id){
-    const hand = document.getElementById(id);
-    if(!hand) return;
-    const ray = hand.components && hand.components.raycaster;
-    if(ray && ray.line){
-      ray.line.visible = visible;
-    } else {
-      // El componente raycaster puede no estar listo todavía; reintentar
-      setTimeout(function(){
-        const r2 = hand.components && hand.components.raycaster;
-        if(r2 && r2.line) r2.line.visible = visible;
-      }, 60);
-    }
-  });
-}
-
 function wrapLines(ctx, text, maxWidth){
   const words = String(text||'').split(' ');
   const lines = [];
@@ -777,31 +772,29 @@ function drawCardLeft(b){
 
   // Fondo cálido (cacao tostado, no quemado)
   ctx.clearRect(0,0,W,H);
-  ctx.fillStyle = '#6e4a30';
+  ctx.fillStyle = '#6b1020';
   ctx.fillRect(0,0,W,H);
 
-  // Corazón (arriba a la derecha) — más grande para clickear más fácil
-  const heartCx = W-padX-42, heartCy = 70;
+  // Corazón
   ctx.fillStyle = 'rgba(217,189,154,0.25)';
-  ctx.beginPath(); ctx.arc(heartCx,heartCy,46,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#d9bd9a';
-  ctx.font = '46px sans-serif';
+  ctx.beginPath(); ctx.arc(570,70,38,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#e88a7a';
+  ctx.font = '38px sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText(p3HeartFilled ? '\u2665' : '\u2661', heartCx, heartCy+3);
+  ctx.fillText(p3HeartFilled ? '\u2665' : '\u2661', 570, 74);
   ctx.textAlign='left'; ctx.textBaseline='alphabetic';
 
-  // Título (hasta 2 líneas, ancho completo)
-  const titleMaxW = W-padX*2-110;
+  // Título (hasta 2 líneas)
   let y = 75;
   ctx.fillStyle = '#ffffff';
   ctx.font = 'bold 40px sans-serif';
-  const titleLines = wrapLines(ctx, b.t, titleMaxW).slice(0,2);
+  const titleLines = wrapLines(ctx, b.t, 460).slice(0,2);
   titleLines.forEach((line,i)=> ctx.fillText(line, padX, y + i*48));
   y += titleLines.length*48 + 38;
 
   // Autor · año
   ctx.font = '26px sans-serif';
-  ctx.fillStyle = '#d9bd9a';
+  ctx.fillStyle = '#e88a7a';
   ctx.fillText(b.a + '  \u00b7  ' + (b.y||''), padX, y);
   y += 46;
 
@@ -813,36 +806,35 @@ function drawCardLeft(b){
 
   // Sinopsis
   ctx.font = '25px sans-serif';
-  ctx.fillStyle = '#f7ead8';
+  ctx.fillStyle = '#faf0e6';
   const synLines = wrapLines(ctx, b.s, W-padX*2);
   synLines.forEach((line,i)=> ctx.fillText(line, padX, y + i*40));
   y += synLines.length*40 + 60;
 
   // Precio
   ctx.font = 'bold 50px sans-serif';
-  ctx.fillStyle = '#e0a878';
+  ctx.fillStyle = '#f7c35a';
   ctx.fillText(b.p, padX, y);
 
-  // Botones inferiores — dibujados en canvas para bordes/relleno precisos
-  // Plane: 0.64w x 1.0h → 640x1000px. Botón en x=±0.165, y=-0.42 (espacio local)
+  // Botones inferiores dibujados en canvas
   const btnW=290, btnH=100, btnY=920-btnH/2;
-  const cerrarCx = 320-150, leerCx = 320+150; // centros: -0.15m y +0.15m
+  const cerrarCx = 320-150, leerCx = 320+150;
   const cerrarX  = cerrarCx-btnW/2, leerX = leerCx-btnW/2;
 
-  // Cerrar — secundario: borde blanco, relleno transparente (no se dibuja relleno)
-  ctx.strokeStyle = '#ffffff';
+  // Cerrar — secundario: borde blanco, sin relleno
+  ctx.strokeStyle = '#faf0e6';
   ctx.lineWidth = 2.5;
   roundRect(ctx, cerrarX, btnY, btnW, btnH, 10); ctx.stroke();
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = '#faf0e6';
   ctx.font = 'bold 28px sans-serif';
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillText('Cerrar', cerrarX+btnW/2, btnY+btnH/2);
+  ctx.fillText('Cerrar', cerrarCx, btnY+btnH/2);
 
-  // Leer muestra — primario: relleno marrón oscuro, texto crema
-  ctx.fillStyle = '#2e160c';
+  // Leer muestra — primario: relleno carmesí, texto crema
+  ctx.fillStyle = '#b81a30';
   roundRect(ctx, leerX, btnY, btnW, btnH, 10); ctx.fill();
-  ctx.fillStyle = '#f7ead8';
-  ctx.fillText('Leer muestra', leerX+btnW/2, btnY+btnH/2);
+  ctx.fillStyle = '#faf0e6';
+  ctx.fillText('Leer muestra', leerCx, btnY+btnH/2);
   ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
 
   refreshTexture(el);
@@ -855,9 +847,8 @@ function drawCardRight(){
   const ctx = el._ctx;
   const W=640, H=1000, padX=40;
 
-  // Fondo cálido (cacao tostado, igual a la card izquierda)
   ctx.clearRect(0,0,W,H);
-  ctx.fillStyle = '#6e4a30';
+  ctx.fillStyle = '#6b1020';
   ctx.fillRect(0,0,W,H);
 
   // Título "Reseñas"
@@ -871,68 +862,93 @@ function drawCardRight(){
   const labelW = ctx.measureText(label).width;
   const pillW  = labelW + 50;
   const pillX  = W - padX - pillW;
-  ctx.fillStyle = 'rgba(217,189,154,0.22)';
+  ctx.fillStyle = 'rgba(184,26,48,0.35)';
   roundRect(ctx, pillX, 35, pillW, 56, 28); ctx.fill();
-  ctx.fillStyle = '#d9bd9a';
+  ctx.fillStyle = '#faf0e6';
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.fillText(label, pillX+pillW/2, 64);
   ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
 
   // Separador bajo el header
-  ctx.strokeStyle = 'rgba(217,189,154,0.3)';
+  ctx.strokeStyle = 'rgba(232,138,122,0.3)';
   ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(padX,115); ctx.lineTo(W-padX,115); ctx.stroke();
 
   if(p3RevList.length === 0){
-    ctx.fillStyle = '#f7ead8';
+    ctx.fillStyle = '#faf0e6';
     ctx.font = '25px sans-serif';
     ctx.fillText('Sin resenas todavia.', padX, 170);
     refreshTexture(el);
     return;
   }
 
-  const avColors = ['#8a4a2e','#3a5a7a','#3e6a4a','#7a4e1e','#5a4a7a','#2e4a6a'];
-  const blockH   = 280;
+  const VISIBLE = 3;
+  const avColors = ['#8a2030','#3a4a7a','#3a6a4a','#7a2e1e','#6a2a5a','#2e4a6a'];
+  const blockH = 255;
+  const startY = 135;
 
-  p3RevList.slice(0,3).forEach(function(rv, idx){
-    const top = 145 + idx*blockH;
+  // Dibujar 3 reseñas a partir de p3RevScroll
+  const slice = p3RevList.slice(p3RevScroll, p3RevScroll + VISIBLE);
+  slice.forEach(function(rv, idx){
+    const top = startY + idx * blockH;
 
-    // Avatar circular con inicial
-    ctx.fillStyle = avColors[idx % avColors.length];
-    ctx.beginPath(); ctx.arc(padX+30, top+30, 30, 0, Math.PI*2); ctx.fill();
+    // Avatar
+    ctx.fillStyle = avColors[(p3RevScroll + idx) % avColors.length];
+    ctx.beginPath(); ctx.arc(padX+28, top+28, 28, 0, Math.PI*2); ctx.fill();
     ctx.fillStyle = '#fff';
-    ctx.font = 'bold 28px sans-serif';
+    ctx.font = 'bold 26px sans-serif';
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText((rv.u[0]||'?').toUpperCase(), padX+30, top+32);
+    ctx.fillText((rv.u[0]||'?').toUpperCase(), padX+28, top+30);
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
 
     // Username
-    ctx.font = 'bold 25px sans-serif';
-    ctx.fillStyle = '#d9bd9a';
-    ctx.fillText(rv.u, padX+76, top+22);
+    ctx.font = 'bold 23px sans-serif';
+    ctx.fillStyle = '#e88a7a';
+    ctx.fillText(rv.u, padX+72, top+20);
 
-    // Estrellas + tiempo en la misma línea
+    // Estrellas + tiempo
     const stars = '\u2605'.repeat(rv.p||0) + '\u2606'.repeat(5-(rv.p||0));
+    ctx.font = '20px sans-serif';
+    ctx.fillStyle = '#f7c35a';
+    ctx.fillText(stars, padX+72, top+50);
+    const sw = ctx.measureText(stars).width;
+    ctx.fillStyle = 'rgba(250,240,230,0.5)';
+    ctx.fillText('  \u00b7  ' + rv.t, padX+72+sw, top+50);
+
+    // Texto
     ctx.font = '21px sans-serif';
-    ctx.fillStyle = '#e0a878';
-    ctx.fillText(stars, padX+76, top+54);
-    const starsW = ctx.measureText(stars).width;
-    ctx.fillStyle = 'rgba(217,189,154,0.6)';
-    ctx.fillText('  \u00b7  ' + rv.t, padX+76+starsW, top+54);
-
-    // Texto de la reseña
-    ctx.font = '22px sans-serif';
-    ctx.fillStyle = '#f7ead8';
+    ctx.fillStyle = '#faf0e6';
     const lines = wrapLines(ctx, rv.r, W-padX*2).slice(0,3);
-    lines.forEach((line,li)=> ctx.fillText(line, padX, top+98 + li*31));
+    lines.forEach((line,li)=> ctx.fillText(line, padX, top+82 + li*29));
 
-    // Separador entre reseñas (excepto la última)
-    if(idx < 2){
-      ctx.strokeStyle = 'rgba(217,189,154,0.18)';
+    // Separador
+    if(idx < slice.length-1){
+      ctx.strokeStyle = 'rgba(232,138,122,0.18)';
       ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(padX, top+blockH-15); ctx.lineTo(W-padX, top+blockH-15); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(padX, top+blockH-8); ctx.lineTo(W-padX, top+blockH-8); ctx.stroke();
     }
   });
+
+  // ── Scroll arrows + contador abajo ──
+  const arrowY = 940;
+  const canScrollUp   = p3RevScroll > 0;
+  const canScrollDown = p3RevScroll + VISIBLE < p3RevList.length;
+
+  // Flecha arriba
+  ctx.font = '36px sans-serif';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = canScrollUp ? '#faf0e6' : 'rgba(250,240,230,0.25)';
+  ctx.fillText('\u2191', 80, arrowY);
+
+  // Contador
+  ctx.font = '22px sans-serif';
+  ctx.fillStyle = '#e88a7a';
+  ctx.fillText((p3RevScroll+1) + '-' + Math.min(p3RevScroll+VISIBLE, p3RevList.length) + ' de ' + p3RevList.length, W/2, arrowY);
+
+  // Flecha abajo
+  ctx.fillStyle = canScrollDown ? '#faf0e6' : 'rgba(250,240,230,0.25)';
+  ctx.fillText('\u2193', W-80, arrowY);
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
 
   refreshTexture(el);
 }
@@ -946,7 +962,7 @@ function drawReaderCanvas(){
 
   // Fondo oscuro cálido, texto claro encima
   ctx.clearRect(0,0,W,H);
-  ctx.fillStyle = '#3a1f14';
+  ctx.fillStyle = '#6b1020';
   ctx.fillRect(0,0,W,H);
 
   const pages = (MUESTRAS[genre]||[])[readerBookIndex] || ['','',''];
@@ -957,7 +973,7 @@ function drawReaderCanvas(){
 
   // "‹ Cerrar" — siempre visible
   ctx.font = 'bold 32px sans-serif';
-  ctx.fillStyle = '#e6b6a4';
+  ctx.fillStyle = '#e88a7a';
   ctx.fillText('\u2039 Cerrar', padX, 58);
 
   if(!isEnd){
@@ -966,19 +982,19 @@ function drawReaderCanvas(){
     ctx.fillStyle = 'rgba(230,182,164,0.25)';
     roundRect(ctx, barX, barY, barW, barH, 5); ctx.fill();
     const pct = (page+1)/(TOTAL+1);
-    ctx.fillStyle = '#e6b6a4';
+    ctx.fillStyle = '#e88a7a';
     roundRect(ctx, barX, barY, barW*pct, barH, 5); ctx.fill();
 
     // "Pag. X de 4"
     ctx.font = '24px sans-serif';
-    ctx.fillStyle = '#e6b6a4';
+    ctx.fillStyle = '#e88a7a';
     ctx.textAlign = 'right';
     ctx.fillText('Pag. ' + (page+1) + ' de ' + (TOTAL+1), W-padX, 58);
     ctx.textAlign = 'left';
 
     // Título
     ctx.font = 'bold 44px sans-serif';
-    ctx.fillStyle = '#f0d8cc';
+    ctx.fillStyle = '#faf0e6';
     ctx.textAlign = 'center';
     ctx.fillText(b ? b.t : '', W/2, 160);
     ctx.textAlign = 'left';
@@ -996,50 +1012,26 @@ function drawReaderCanvas(){
 
     // Paginación inferior
     ctx.font = '34px sans-serif';
-    ctx.fillStyle = '#e6b6a4';
+    ctx.fillStyle = '#e88a7a';
     ctx.textAlign = 'center';
     ctx.fillText('\u2039', 100, 950);
     ctx.fillText((page+1) + ' / ' + (TOTAL+1), W/2, 950);
     ctx.fillText('\u203A', W-100, 950);
     ctx.textAlign = 'left';
   } else {
-    // Pantalla final — fondo claro propio para dar contraste con los botones
-    ctx.fillStyle = '#d9a98e';
-    ctx.fillRect(0, 0, W, H);
-
+    // Pantalla final
     ctx.font = 'bold 46px sans-serif';
-    ctx.fillStyle = '#3a1f14';
+    ctx.fillStyle = '#faf0e6';
     ctx.textAlign = 'center';
     const titleLines = wrapLines(ctx, '\u00a1Ultima pagina de muestra!', W-padX*2);
     titleLines.forEach((line,i)=> ctx.fillText(line, W/2, 230 + i*56));
 
     ctx.font = '28px sans-serif';
-    ctx.fillStyle = '#3a1f14';
+    ctx.fillStyle = '#e88a7a';
     const msgLines = wrapLines(ctx, 'Llegaste al final de la muestra. No te quedes a mitad de la historia.', W-padX*2-200);
     const startY = 230 + titleLines.length*56 + 60;
     msgLines.forEach((line,i)=> ctx.fillText(line, W/2, startY + i*42));
     ctx.textAlign = 'left';
-
-    // Botones — Guardar en Kindle (primario), Volver a la mesa (secundario)
-    const btnW=480, btnH=130, btnY=820-btnH/2;
-    const volverCx = 650-310, kindleCx = 650+310;
-    const volverX  = volverCx-btnW/2, kindleX = kindleCx-btnW/2;
-
-    // Volver a la mesa — secundario: borde oscuro, relleno transparente
-    ctx.strokeStyle = '#3a1f14';
-    ctx.lineWidth = 3;
-    roundRect(ctx, volverX, btnY, btnW, btnH, 14); ctx.stroke();
-    ctx.fillStyle = '#3a1f14';
-    ctx.font = 'bold 32px sans-serif';
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText('Volver a la mesa', volverCx, btnY+btnH/2);
-
-    // Guardar en Kindle — primario: relleno marrón oscuro, texto crema
-    ctx.fillStyle = '#3a1f14';
-    roundRect(ctx, kindleX, btnY, btnW, btnH, 14); ctx.fill();
-    ctx.fillStyle = '#e6b6a4';
-    ctx.fillText('Guardar en Kindle', kindleCx, btnY+btnH/2);
-    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
   }
 
   refreshTexture(el);
@@ -1063,56 +1055,56 @@ function drawGenrePicker(){
   const W=1300, H=850;
 
   ctx.clearRect(0,0,W,H);
-  // Fondo glassmorphism oscuro violeta, igual al onboarding
-  ctx.fillStyle = '#160f28';
+  // Fondo borgoña oscuro con borde carmesí
+  ctx.fillStyle = '#1e0810';
   ctx.fillRect(0,0,W,H);
-  ctx.strokeStyle = 'rgba(124,77,255,0.35)';
+  ctx.strokeStyle = 'rgba(184,26,48,0.45)';
   ctx.lineWidth = 4;
   ctx.strokeRect(2,2,W-4,H-4);
 
   ctx.textAlign = 'center';
 
   // Eyebrow
-  ctx.fillStyle = '#c8a060';
+  ctx.fillStyle = '#f7c35a';
   ctx.font = 'bold 22px sans-serif';
-  ctx.fillText('\u{1F4DA} BIBLIOTECA VIRTUAL', W/2, 55);
+  ctx.fillText('\u{1F4DA} RAMUNA DIGITAL', W/2, 55);
 
   // Título
-  ctx.fillStyle = '#f5efe0';
+  ctx.fillStyle = '#faf0e6';
   ctx.font = 'bold 50px sans-serif';
   ctx.fillText('\u00bfQue te gustaria leer hoy?', W/2, 120);
 
   // Subtítulo
-  ctx.fillStyle = 'rgba(220,205,175,0.65)';
+  ctx.fillStyle = 'rgba(250,240,230,0.55)';
   ctx.font = '24px sans-serif';
-  ctx.fillText('Elegi un genero para cambiar la sala de libros.', W/2, 165);
+  ctx.fillText('Elegi un genero para explorar nuestra sala de libros.', W/2, 165);
 
-  // Cards de género (fila horizontal, igual al grid del onboarding)
+  // Cards de género
   const cardW=220, cardH=220, cardTop=230, gap=20, startX=60;
   GENRE_OPTIONS.forEach((g,i)=>{
     const x = startX + i*(cardW+gap);
     const isSel = g3Selected === g.key;
 
-    ctx.fillStyle = isSel ? 'rgba(200,160,80,0.18)' : 'rgba(200,160,80,0.06)';
+    ctx.fillStyle = isSel ? 'rgba(184,26,48,0.25)' : 'rgba(184,26,48,0.08)';
     roundRect(ctx, x, cardTop, cardW, cardH, 14); ctx.fill();
-    ctx.strokeStyle = isSel ? '#c8a060' : 'rgba(200,160,80,0.18)';
+    ctx.strokeStyle = isSel ? '#b81a30' : 'rgba(184,26,48,0.25)';
     ctx.lineWidth = isSel ? 3 : 1.5;
     roundRect(ctx, x, cardTop, cardW, cardH, 14); ctx.stroke();
 
     ctx.font = '64px sans-serif';
-    ctx.fillStyle = '#f5efe0';
+    ctx.fillStyle = '#faf0e6';
     ctx.fillText(g.icon, x+cardW/2, cardTop+cardH/2-10);
 
     ctx.font = 'bold 26px sans-serif';
-    ctx.fillStyle = isSel ? '#f0c870' : '#e8d8b0';
+    ctx.fillStyle = isSel ? '#faf0e6' : '#e88a7a';
     ctx.fillText(g.name, x+cardW/2, cardTop+cardH/2+50);
   });
 
-  // Botón confirmar — pastilla dorada, igual al "Entrar a VR"
+  // Botón confirmar — pastilla carmesí
   const btnW=360, btnH=105, btnX=(W-btnW)/2, btnY=577;
-  ctx.fillStyle = g3Selected ? '#8b5e1a' : 'rgba(139,94,26,0.35)';
+  ctx.fillStyle = g3Selected ? '#b81a30' : 'rgba(184,26,48,0.3)';
   roundRect(ctx, btnX, btnY, btnW, btnH, 52); ctx.fill();
-  ctx.fillStyle = '#f5ede0';
+  ctx.fillStyle = '#faf0e6';
   ctx.font = 'bold 32px sans-serif';
   ctx.textBaseline = 'middle';
   ctx.fillText('Cambiar \u2192', W/2, btnY+btnH/2);
@@ -1125,9 +1117,18 @@ function drawGenrePicker(){
 function openGenrePicker(){
   closePanel();
   document.getElementById('reader3d').setAttribute('visible','false');
+  // Cerrar tips si estaban abiertos
+  if(tipsOpen){ tipsOpen = false; document.getElementById('tips-panel').setAttribute('visible','false'); }
   const bback = document.getElementById('bback');
   if(bback) bback.setAttribute('visible','false');
-  setControllerLaserVisible(false);
+  const helpBtn2 = document.getElementById('help-btn');
+  if(helpBtn2) helpBtn2.setAttribute('visible','false');
+
+  // Ocultar libros mientras se elige el género
+  for(let i=0;i<8;i++){
+    const el=document.getElementById('b'+i);
+    if(el) el.setAttribute('visible','false');
+  }
 
   g3Selected = genre;
   drawGenrePicker();
@@ -1153,7 +1154,6 @@ function g3Confirm(){
   panel.setAttribute('animation__appear',
     'property:scale; to:0.01 0.01 0.01; dur:180; easing:easeInQuad');
   setTimeout(function(){ panel.setAttribute('visible','false'); }, 190);
-  setControllerLaserVisible(true);
 
   // Limpiar texturas de libros anteriores
   for(let i=0;i<8;i++){
@@ -1164,6 +1164,11 @@ function g3Confirm(){
   loadBooks();
 }
 
+function showGenrePicker(){
+  // Entra directo al VR sin género — el selector 3D aparece adentro
+  enterVR();
+}
+
 function pick(el){
   document.querySelectorAll('.gc').forEach(c=>c.classList.remove('sel'));
   el.classList.add('sel');
@@ -1172,10 +1177,7 @@ function pick(el){
 }
 
 function enterVR(){
-  if(!genre)return;
-
-  loadBooks();
-
+  // No requiere género — entra al VR y abre el selector 3D automáticamente
   const scene = document.getElementById('sc');
   scene.style.display = 'block';
   scene.style.visibility = 'visible';
@@ -1185,25 +1187,23 @@ function enterVR(){
   ov.classList.add('fade');
   setTimeout(()=>{ ov.classList.add('off'); }, 520);
 
-  const h=document.getElementById('hint');
-  h.classList.add('show');
-  setTimeout(()=>h.classList.remove('show'),5000);
+  setTimeout(()=>{ window.dispatchEvent(new Event('resize')); }, 600);
 
+  // Entrar al modo VR inmersivo
   setTimeout(()=>{
-    window.dispatchEvent(new Event('resize'));
-  }, 600);
-
-  // Pedir directamente la sesión VR — un solo botón en todo el flujo
-  setTimeout(()=>{
-    if(scene.is('vr-mode')) return;
+    if(scene.is && scene.is('vr-mode')) return;
     if(scene.enterVR) scene.enterVR();
   }, 700);
+
+  // Abrir el selector de género 3D automáticamente al entrar
+  setTimeout(()=>{ openGenrePicker(); }, 900);
 }
 
 function loadBooks(){
   DB[genre].forEach((b,i)=>{
     const el=document.getElementById('b'+i);
     if(!el)return;
+    el.setAttribute('visible','true');
     el.setAttribute('color',COLS[i]);
     el.setAttribute('emissive','#000');
     el.setAttribute('emissive-intensity','0');
@@ -1227,7 +1227,7 @@ function loadBooks(){
 
       el.addEventListener('mouseenter',()=>{
         if(currentOpenedBookIndex !== null) return;
-        el.setAttribute('emissive','#c8a060');
+        el.setAttribute('emissive','#f7c35a');
         el.setAttribute('emissive-intensity','0.45');
         const b = DB[genre][i];
         if(b) showTooltip(el, b.t);
@@ -1244,6 +1244,8 @@ function loadBooks(){
   // Mostrar botón "Cambiar género" (HUD 3D, siempre visible en la sala)
   const bback = document.getElementById('bback');
   if(bback) bback.setAttribute('visible','true');
+  const helpBtn = document.getElementById('help-btn');
+  if(helpBtn) helpBtn.setAttribute('visible','true');
 }
 
 function openPanel(i){
@@ -1254,10 +1256,8 @@ function openPanel(i){
   const el = document.getElementById('b'+i);
   hideTooltip(el);
 
-  el.setAttribute('emissive','#c8a060');
+  el.setAttribute('emissive','#f7c35a');
   el.setAttribute('emissive-intensity','0.4');
-
-  setControllerLaserVisible(false);
 
   // ── Card izquierda: datos del libro (dibujado en canvas) ──
   p3CurrentBook  = b;
@@ -1265,19 +1265,42 @@ function openPanel(i){
   drawCardLeft(b);
 
   // ── Card derecha: reseñas (dibujado en canvas) ──
-  p3SortMode = 'relevancia';
+  p3SortMode  = 'relevancia';
+  p3RevScroll = 0;
   p3RevList  = ((REVIEWS[genre]||[])[i] || []).slice();
   p3RevIndex = 0;
   drawCardRight();
 
-  // ── Mostrar panel3d ──
+  // ── Posicionar panel sobre el libro, mirando siempre a la cámara ──
   const panel = document.getElementById('panel3d');
+  const bookPos = new AFRAME.THREE.Vector3();
+  el.object3D.getWorldPosition(bookPos);
+  panel.object3D.position.set(bookPos.x * 1.4, bookPos.y + 0.65, bookPos.z * 1.4);
   panel.setAttribute('visible','true');
   panel.setAttribute('scale','0.01 0.01 0.01');
+
+  const cam = document.getElementById('cam');
+  function trackPanel(){
+    if(!panel.getAttribute('visible')) return;
+    const camPos = new AFRAME.THREE.Vector3();
+    cam.object3D.getWorldPosition(camPos);
+    panel.object3D.lookAt(camPos);
+    panel._trackRAF = requestAnimationFrame(trackPanel);
+  }
+  if(panel._trackRAF) cancelAnimationFrame(panel._trackRAF);
+  trackPanel();
+
   setTimeout(function(){
     panel.setAttribute('animation__appear',
       'property:scale; from:0.01 0.01 0.01; to:1 1 1; dur:280; easing:easeOutBack');
   }, 30);
+}
+
+function p3ScrollUp(){
+  if(p3RevScroll > 0){ p3RevScroll--; drawCardRight(); }
+}
+function p3ScrollDown(){
+  if(p3RevScroll + 3 < p3RevList.length){ p3RevScroll++; drawCardRight(); }
 }
 
 function p3CycleSort(){
@@ -1291,12 +1314,14 @@ function p3CycleSort(){
   // 'relevancia' = orden original
 
   p3RevList  = sorted;
+  p3RevScroll = 0;
   p3RevIndex = 0;
   drawCardRight();
 }
 
 function closePanel(){
   const panel = document.getElementById('panel3d');
+  if(panel._trackRAF){ cancelAnimationFrame(panel._trackRAF); panel._trackRAF = null; }
   panel.setAttribute('animation__appear',
     'property:scale; to:0.01 0.01 0.01; dur:180; easing:easeInQuad');
   setTimeout(function(){ panel.setAttribute('visible','false'); }, 190);
@@ -1309,7 +1334,6 @@ function closePanel(){
     }
   }
   currentOpenedBookIndex = null;
-  setControllerLaserVisible(true);
 }
 
 function leerMuestra(){
@@ -1333,6 +1357,86 @@ function goBack(){
 }
 
 let toast3dTimer = null;
+/* ════════ PANEL TIPS DE USO ════════ */
+let tipsOpen = false;
+
+function drawTipsPanel(){
+  const el = document.getElementById('tips-canvas');
+  if(!el._ctx) makeCanvasPlane(el, 720, 870);
+  const ctx = el._ctx;
+  const W=720, H=870, padX=40;
+
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = '#1e0810';
+  ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle = 'rgba(184,26,48,0.5)';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(2,2,W-4,H-4);
+
+  // Título
+  ctx.fillStyle = '#f7c35a';
+  ctx.font = 'bold 22px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('MODO DE USO', W/2, 52);
+
+  // X para cerrar (esquina sup der) — canvas x=655,y=30 → plane x=0.31,y=0.39
+  ctx.fillStyle = 'rgba(250,240,230,0.5)';
+  ctx.font = 'bold 34px sans-serif';
+  ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+  ctx.fillText('\u00d7', W-20, 18);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+
+  ctx.strokeStyle = 'rgba(232,138,122,0.3)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(padX, 75); ctx.lineTo(W-padX, 75); ctx.stroke();
+
+  const tips = [
+    ['\u{1F3AE}', 'Usá el gatillo del mando para interactuar con todo.'],
+    ['\u{1F3AF}', 'Apuntá a un libro y apretá el gatillo para ver su info.'],
+    ['\u{1F4D6}', 'Tocá "Leer muestra" para leer un fragmento del libro.'],
+    ['\u2665',    'Tocá el corazón para guardar el libro en favoritos.'],
+    ['\u{1F4F1}', '"Guardar en Kindle" agrega el libro a tu cuenta.'],
+    ['\u{1F503}', '"Cambiar genero" te lleva a explorar otra categoria.'],
+  ];
+
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'top';
+  let y = 105;
+  tips.forEach(([icon, text]) => {
+    ctx.font = '28px sans-serif';
+    ctx.fillStyle = '#e88a7a';
+    ctx.fillText(icon, padX, y);
+
+    ctx.font = '22px sans-serif';
+    ctx.fillStyle = '#faf0e6';
+    const lines = wrapLines(ctx, text, W-padX*2-52);
+    lines.forEach((line, i) => ctx.fillText(line, padX+52, y + i*30));
+    y += Math.max(lines.length * 30, 36) + 20;
+  });
+
+  ctx.textBaseline = 'alphabetic';
+  refreshTexture(el);
+}
+
+function toggleTips(){
+  tipsOpen = !tipsOpen;
+  const panel = document.getElementById('tips-panel');
+  if(tipsOpen){
+    drawTipsPanel();
+    makeHUDAlwaysOnTop(panel);
+    panel.setAttribute('visible','true');
+    panel.setAttribute('scale','0.01 0.01 0.01');
+    setTimeout(function(){
+      panel.setAttribute('animation__pop',
+        'property:scale; from:0.01 0.01 0.01; to:1 1 1; dur:200; easing:easeOutBack');
+    }, 20);
+  } else {
+    panel.setAttribute('animation__pop',
+      'property:scale; to:0.01 0.01 0.01; dur:150; easing:easeInQuad');
+    setTimeout(function(){ panel.setAttribute('visible','false'); }, 160);
+  }
+}
+
 function drawToast(msg){
   const el = document.getElementById('toast3d-canvas');
   if(!el._ctx) makeCanvasPlane(el, 1000, 150);
@@ -1349,14 +1453,14 @@ function drawToast(msg){
   const r = H/2;
 
   // Pastilla bien redondeada
-  ctx.fillStyle = '#2e1c10';
+  ctx.fillStyle = '#6b1020';
   roundRect(ctx, pillX, 0, pillW, H, r); ctx.fill();
   ctx.strokeStyle = 'rgba(217,189,154,0.35)';
   ctx.lineWidth = 3;
   roundRect(ctx, pillX, 0, pillW, H, r); ctx.stroke();
 
   // Texto centrado
-  ctx.fillStyle = '#f7ead8';
+  ctx.fillStyle = '#faf0e6';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText(msg, W/2, H/2+2);
@@ -1387,7 +1491,7 @@ function toast(msg){
 }
 
 /* ESTANTES DECORATIVOS */
-const SC=['#7a2e1a','#3d1f5c','#1a3a5c','#8a4e10','#1e4a2a','#6b1010','#7a3a10','#0e2d4a','#4a1a3a','#0a3028','#7a6010','#5a2e08','#1a3a5a','#5a4808','#3a1040','#083020','#6a1e10','#4a2008','#124a28','#1e2a3a'];
+const SC=['#6b1020','#7a1828','#5a0e18','#8a1a2a','#4a0c14','#9a2030','#601018','#7a1428','#501020','#8a2030','#6a0e20','#7e1a28','#4e0c16','#6b1020','#551018','#8a1c2c','#600e1c','#741420','#4a0e14','#6b1020'];
 function mkB(p,w,h,d,c,r){const e=document.createElement('a-box');e.setAttribute('position',p);e.setAttribute('width',w);e.setAttribute('height',h);e.setAttribute('depth',d);e.setAttribute('color',c);if(r)e.setAttribute('rotation',r);e.setAttribute('roughness','0.85');return e;}
 function shUnit(parent,x,y,z,ry,uw,uh,rows,bpr){
   const w=document.createElement('a-entity');
@@ -1462,56 +1566,45 @@ function shUnit(parent,x,y,z,ry,uw,uh,rows,bpr){
   parent.appendChild(w);
 }
 
-function drawTooltipPill(msg){
-  const el = document.getElementById('tooltip3d-canvas');
-  if(!el._ctx) makeCanvasPlane(el, 600, 130);
-  const ctx = el._ctx;
-  const W=600, H=130;
-
-  ctx.clearRect(0,0,W,H);
-  ctx.font = 'bold 30px sans-serif';
-  const textW = ctx.measureText(msg).width;
-  const pillW = Math.min(W-10, textW + 64);
-  const pillX = (W-pillW)/2;
-  const r = H/2;
-
-  ctx.fillStyle = '#2e1c10';
-  roundRect(ctx, pillX, 0, pillW, H, r); ctx.fill();
-  ctx.strokeStyle = 'rgba(217,189,154,0.4)';
-  ctx.lineWidth = 2;
-  roundRect(ctx, pillX, 0, pillW, H, r); ctx.stroke();
-
-  ctx.fillStyle = '#f7ead8';
-  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillText(msg, W/2, H/2+2);
-  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
-
-  refreshTexture(el);
+// Convierte posición 3D del libro a coordenadas 2D de pantalla
+function getScreenPos(el) {
+  const obj   = el.object3D;
+  const scene = document.getElementById('sc');
+  const cam   = document.getElementById('cam');
+  if(!obj || !scene || !cam) return null;
+  const renderer = scene.renderer;
+  const camera   = cam.getObject3D('camera');
+  if(!renderer || !camera) return null;
+  const pos = new THREE.Vector3();
+  obj.getWorldPosition(pos);
+  pos.project(camera);
+  const w = renderer.domElement.clientWidth;
+  const h = renderer.domElement.clientHeight;
+  return {
+    x: (pos.x * 0.5 + 0.5) * w,
+    y: (-pos.y * 0.5 + 0.5) * h
+  };
 }
 
 function showTooltip(el, title) {
-  const tt = document.getElementById('tooltip3d');
-  drawTooltipPill(title);
-  tt.setAttribute('visible','true');
-
-  // Seguir al libro y mirar siempre hacia la cámara, mientras esté visible
-  const cam = document.getElementById('cam');
-  const THREE = AFRAME.THREE;
+  const tt = document.getElementById('book-tooltip');
+  tt.textContent = title;
+  tt.classList.add('visible');
+  // Actualizar posición continuamente mientras está visible
   el._tooltipRAF = requestAnimationFrame(function loop(){
-    if(!tt.getAttribute('visible')) return;
-    const pos = new THREE.Vector3();
-    el.object3D.getWorldPosition(pos);
-    tt.object3D.position.set(pos.x, pos.y + 0.22, pos.z);
-    const camPos = new THREE.Vector3();
-    cam.object3D.getWorldPosition(camPos);
-    tt.object3D.lookAt(camPos);
+    if(!tt.classList.contains('visible')) return;
+    const sp = getScreenPos(el);
+    if(sp) {
+      tt.style.left = sp.x + 'px';
+      tt.style.top  = (sp.y - 12) + 'px'; // 12px sobre el libro
+    }
     el._tooltipRAF = requestAnimationFrame(loop);
   });
 }
 
 function hideTooltip(el) {
-  const tt = document.getElementById('tooltip3d');
-  tt.setAttribute('visible','false');
+  const tt = document.getElementById('book-tooltip');
+  tt.classList.remove('visible');
   if(el._tooltipRAF) { cancelAnimationFrame(el._tooltipRAF); el._tooltipRAF = null; }
 }
 
@@ -1538,6 +1631,8 @@ function initScene(){
   document.getElementById('p3-leer-btn').addEventListener('click', leerMuestra);
   document.getElementById('p3-heart-btn').addEventListener('click', saveToFavorites);
   document.getElementById('p3-filter-btn').addEventListener('click', p3CycleSort);
+  document.getElementById('p3-scroll-up').addEventListener('click', p3ScrollUp);
+  document.getElementById('p3-scroll-down').addEventListener('click', p3ScrollDown);
 
   // ── Botones reader3d (lector de muestra) ──
   document.getElementById('r3-back').addEventListener('click', closeReader);
@@ -1548,6 +1643,8 @@ function initScene(){
 
   // ── Botón cambiar género (3D) ──
   document.getElementById('bback-hit').addEventListener('click', goBack);
+  document.getElementById('help-btn-hit').addEventListener('click', toggleTips);
+  document.getElementById('tips-close-btn').addEventListener('click', toggleTips);
 
   // ── Selector de género 3D ──
   GENRE_OPTIONS.forEach(function(g){
@@ -1556,8 +1653,8 @@ function initScene(){
   });
   document.getElementById('g3-confirm').addEventListener('click', g3Confirm);
 
-  // ── HUD siempre por encima: ignorar el depth-buffer del mundo (mesa/libros) ──
-  ['panel3d','reader3d','bback','genre3d','toast3d','tooltip3d'].forEach(function(id){
+  // ── HUD siempre por encima: solo los elementos anclados a la cámara ──
+  ['bback','genre3d','toast3d','help-btn','tips-panel'].forEach(function(id){
     makeHUDAlwaysOnTop(document.getElementById(id));
   });
 
@@ -1605,7 +1702,16 @@ function openReader(){
   readerBookIndex   = currentOpenedBookIndex;
   renderReaderPage();
 
+  // Posicionar reader en el mismo lugar que estaba el panel
   const reader = document.getElementById('reader3d');
+  const panel  = document.getElementById('panel3d');
+  reader.object3D.position.copy(panel.object3D.position);
+
+  const cam = document.getElementById('cam');
+  const camPos = new AFRAME.THREE.Vector3();
+  cam.object3D.getWorldPosition(camPos);
+  reader.object3D.lookAt(camPos);
+
   reader.setAttribute('visible','true');
   reader.setAttribute('scale','0.01 0.01 0.01');
   setTimeout(function(){
